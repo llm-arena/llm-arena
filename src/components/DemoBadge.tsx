@@ -8,4 +8,3 @@ export const DemoBadge = () => (
     </a>
   </div>
 );
-·
