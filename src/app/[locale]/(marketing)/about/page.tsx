@@ -52,4 +52,4 @@ export default async function About(props: IAboutProps) {
       </a>
     </>
   );
-};
+}

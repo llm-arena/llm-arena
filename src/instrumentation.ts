@@ -7,9 +7,7 @@ const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
   // Enable Spotlight in development
   spotlight: process.env.NODE_ENV === 'development',
 
-  integrations: [
-    Sentry.consoleLoggingIntegration(),
-  ],
+  integrations: [Sentry.consoleLoggingIntegration()],
 
   // Adds request headers and IP for users, for more info visit
   sendDefaultPii: true,

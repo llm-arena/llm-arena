@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Counter', () => {
   test.describe('Basic database operations', () => {
-    test('shouldn\'t increment the counter with an invalid input', async ({ page }) => {
+    test("shouldn't increment the counter with an invalid input", async ({ page }) => {
       const counter = await page.request.put('/api/counter', {
         data: {
           increment: 'incorrect',
@@ -13,7 +13,7 @@ test.describe('Counter', () => {
       expect(counter.status()).toBe(422);
     });
 
-    test('shouldn\'t increment the counter with a negative number', async ({ page }) => {
+    test("shouldn't increment the counter with a negative number", async ({ page }) => {
       const counter = await page.request.put('/api/counter', {
         data: {
           increment: -1,
@@ -23,7 +23,7 @@ test.describe('Counter', () => {
       expect(counter.status()).toBe(422);
     });
 
-    test('shouldn\'t increment the counter with a number greater than 3', async ({ page }) => {
+    test("shouldn't increment the counter with a number greater than 3", async ({ page }) => {
       const counter = await page.request.put('/api/counter', {
         data: {
           increment: 5,

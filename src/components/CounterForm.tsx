@@ -1,10 +1,10 @@
 'use client';
 
+import { CounterValidation } from '@/validations/CounterValidation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { CounterValidation } from '@/validations/CounterValidation';
 
 export const CounterForm = () => {
   const t = useTranslations('CounterForm');
@@ -17,7 +17,7 @@ export const CounterForm = () => {
   const router = useRouter();
 
   const handleIncrement = form.handleSubmit(async (data) => {
-    const response = await fetch(`/api/counter`, {
+    const response = await fetch('/api/counter', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -45,9 +45,7 @@ export const CounterForm = () => {
         </label>
 
         {form.formState.errors.increment && (
-          <div className="my-2 text-xs text-red-500 italic">
-            {t('error_increment_range')}
-          </div>
+          <div className="my-2 text-xs text-red-500 italic">{t('error_increment_range')}</div>
         )}
       </div>
 

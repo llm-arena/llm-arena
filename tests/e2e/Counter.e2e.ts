@@ -21,9 +21,7 @@ test.describe('Counter', () => {
       await expect(page.getByText('Count:')).toHaveText(countText);
     });
 
-    test('should increment the counter and validate the count', async ({
-      page,
-    }) => {
+    test('should increment the counter and validate the count', async ({ page }) => {
       // `x-e2e-random-id` is used for end-to-end testing to make isolated requests
       // The default value is 0 when there is no `x-e2e-random-id` header
       const e2eRandomId = faker.number.int({ max: 1000000 });

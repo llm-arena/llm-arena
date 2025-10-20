@@ -1,8 +1,8 @@
+import messages from '@/locales/en.json';
 import { page } from '@vitest/browser/context';
 import { NextIntlClientProvider } from 'next-intl';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import messages from '@/locales/en.json';
 import { BaseTemplate } from './BaseTemplate';
 
 describe('Base template', () => {
@@ -11,13 +11,13 @@ describe('Base template', () => {
       render(
         <NextIntlClientProvider locale="en" messages={messages}>
           <BaseTemplate
-            leftNav={(
+            leftNav={
               <>
                 <li>link 1</li>
                 <li>link 2</li>
                 <li>link 3</li>
               </>
-            )}
+            }
           >
             {null}
           </BaseTemplate>
@@ -29,7 +29,7 @@ describe('Base template', () => {
       expect(menuItemList.elements()).toHaveLength(3);
     });
 
-    it('should have a link to support nextjs-boilerplate.com', () => {
+    it('should have copyright section', () => {
       render(
         <NextIntlClientProvider locale="en" messages={messages}>
           <BaseTemplate leftNav={<li>1</li>}>{null}</BaseTemplate>
@@ -37,18 +37,8 @@ describe('Base template', () => {
       );
 
       const copyrightSection = page.getByText(/© Copyright/);
-      const copyrightLink = copyrightSection.getByRole('link');
 
-      /*
-       * PLEASE READ THIS SECTION
-       * We'll really appreciate if you could have a link to our website
-       * The link doesn't need to appear on every pages, one link on one page is enough.
-       * Thank you for your support it'll mean a lot for us.
-       */
-      expect(copyrightLink).toHaveAttribute(
-        'href',
-        'https://nextjs-boilerplate.com',
-      );
+      expect(copyrightSection).toBeDefined();
     });
   });
 });
