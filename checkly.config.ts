@@ -15,7 +15,7 @@ const emailChannel = new EmailAlertChannel('email-channel-1', {
 export const config = defineConfig({
   projectName: process.env.CHECKLY_PROJECT_NAME ?? '',
   logicalId: process.env.CHECKLY_LOGICAL_ID ?? '',
-  repoUrl: 'https://github.com/llm-arena/llm-arena',
+  repoUrl: 'https://github.com/model-arena/model-arena',
   checks: {
     locations: ['us-east-1', 'eu-west-1'],
     tags: ['website'],

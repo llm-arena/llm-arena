@@ -1,5 +1,5 @@
 {
-  "name": "llm-arena",
+  "name": "model-arena",
   "engines": {
     "node": ">=20"
   },
