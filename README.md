@@ -49,3 +49,4 @@ pnpm build
 - [Playwright](https://playwright.dev) - E2E testing
 - [DrizzleORM](https://orm.drizzle.team) - Database ORM
 - [Clerk](https://clerk.com) - Authentication
+- [Next-js-Boilerplate](https://github.com/ixartz/Next-js-Boilerplate) - Template
