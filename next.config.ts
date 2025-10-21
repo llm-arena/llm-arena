@@ -6,9 +6,6 @@ import './src/libs/Env';
 
 // Define the base Next.js configuration
 const baseConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   poweredByHeader: false,
   reactStrictMode: true,
   outputFileTracingIncludes: {

@@ -10,7 +10,7 @@
     "build:next": "next build",
     "build": "run-p db-server:memory build:* --race",
     "start": "next start",
-    "build-stats": "cross-env ANALYZE=true npm run build",
+    "build-stats": "cross-env ANALYZE=true pnpm run build",
     "clean": "rimraf .next out coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
