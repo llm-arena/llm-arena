@@ -62,5 +62,10 @@
     "pcss",
     "postcss",
     "github-actions-workflow"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#5D0929",
+    "titleBar.activeBackground": "#820C39",
+    "titleBar.activeForeground": "#FFFCFD"
+  }
 }

@@ -9,10 +9,10 @@ pre-commit:
   commands:
     lint:
       glob: '*'
-      run: npx --no -- eslint --fix --no-warn-ignored
+      run: npx --no -- biome check --write --no-errors-on-unmatched
       stage_fixed: true
       priority: 1
     check-types:
       glob: '*.{ts,tsx}'
-      run: npm run check:types
+      run: pnpm run check:types
       priority: 2

@@ -1,9 +1,9 @@
+import { CounterForm } from '@/components/CounterForm';
+import { CurrentCount } from '@/components/CurrentCount';
 import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
-import { CounterForm } from '@/components/CounterForm';
-import { CurrentCount } from '@/components/CurrentCount';
 
 export async function generateMetadata(props: {
   params: Promise<{ locale: string }>;
@@ -41,9 +41,7 @@ export default function Counter() {
         </a>
       </div>
 
-      <a
-        href="https://launch.arcjet.com/Q6eLbRE"
-      >
+      <a href="https://launch.arcjet.com/Q6eLbRE">
         <Image
           className="mx-auto mt-2"
           src="/assets/images/arcjet-light.svg"
@@ -54,4 +52,4 @@ export default function Counter() {
       </a>
     </>
   );
-};
+}

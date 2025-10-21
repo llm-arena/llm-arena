@@ -30,9 +30,7 @@ export default defineConfig({
             headless: true,
             provider: 'playwright', // or 'webdriverio'
             screenshotDirectory: 'vitest-test-results',
-            instances: [
-              { browser: 'chromium' },
-            ],
+            instances: [{ browser: 'chromium' }],
           },
         },
       },
