@@ -1,4 +1,3 @@
-import { DemoBadge } from '@/components/DemoBadge';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { routing } from '@/libs/I18nRouting';
 import type { Metadata } from 'next';
@@ -53,7 +52,6 @@ export default async function RootLayout(props: {
       <body>
         <NextIntlClientProvider>
           <PostHogProvider>{props.children}</PostHogProvider>
-          <DemoBadge />
         </NextIntlClientProvider>
       </body>
     </html>

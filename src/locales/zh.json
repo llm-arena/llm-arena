@@ -1,0 +1,47 @@
+{
+  "PublicLayout": {
+    "home_link": "首页",
+    "sign_in_link": "登录",
+    "sign_up_link": "注册",
+    "dashboard_link": "控制台"
+  },
+  "BaseTemplate": {
+    "description": "AI 模型对比平台"
+  },
+  "Index": {
+    "meta_title": "Model Arena - AI 模型对比平台",
+    "meta_description": "并排比较和评估 AI 模型。通过全面的模型分析做出明智的决策。",
+    "title": "Model Arena",
+    "description": "并排比较 AI 模型，找到最适合您需求的方案",
+    "get_started": "开始使用",
+    "view_dashboard": "查看控制台",
+    "features_title": "核心功能",
+    "feature_1_title": "模型对比",
+    "feature_1_description": "并排比较多个 AI 模型，查看详细的指标和性能数据",
+    "feature_2_title": "实时评估",
+    "feature_2_description": "实时测试模型，针对您的具体用例查看即时结果",
+    "feature_3_title": "数据驱动洞察",
+    "feature_3_description": "通过全面的分析和性能基准做出明智的决策"
+  },
+  "SignIn": {
+    "meta_title": "登录",
+    "meta_description": "通过我们便捷的登录流程轻松访问您的账户。"
+  },
+  "SignUp": {
+    "meta_title": "注册",
+    "meta_description": "通过我们直观的注册流程轻松创建账户。"
+  },
+  "Dashboard": {
+    "meta_title": "控制台",
+    "hello_message": "您好 {email}!",
+    "alternative_message": "想使用相同的技术栈更快地构建您的 SaaS？试试 <url></url>。"
+  },
+  "UserProfile": {
+    "meta_title": "用户资料"
+  },
+  "DashboardLayout": {
+    "dashboard_link": "控制台",
+    "user_profile_link": "管理账户",
+    "sign_out": "退出登录"
+  }
+}
