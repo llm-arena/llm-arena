@@ -1,9 +1,10 @@
 import { Env } from '@/libs/Env';
 import * as Sentry from '@sentry/nextjs';
 
-if (!Env.NEXT_PUBLIC_SENTRY_DISABLED) {
+const sentryDisabled = (Env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
+if (!sentryDisabled) {
   Sentry.init({
-    dsn: Env.SENTRY_DSN,
+    dsn: Env.NEXT_PUBLIC_SENTRY_DSN,
     integrations: [
       Sentry.replayIntegration(),
       Sentry.consoleLoggingIntegration(),

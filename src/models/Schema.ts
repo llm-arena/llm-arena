@@ -159,7 +159,7 @@ export const modelRankings = pgTable(
   'model_rankings',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    modelName: text('model_name').notNull().unique(),
+    modelName: text('model_name').notNull(),
     providerName: text('provider_name').notNull(),
     totalLikes: integer('total_likes').default(0).notNull(),
     totalDislikes: integer('total_dislikes').default(0).notNull(),
@@ -169,6 +169,10 @@ export const modelRankings = pgTable(
   },
   (table) => ({
     rankingScoreIdx: index('model_rankings_ranking_score_idx').on(table.rankingScore),
+    uniqueModelProvider: unique('model_rankings_model_provider_unique').on(
+      table.modelName,
+      table.providerName,
+    ),
   }),
 );
 
@@ -205,6 +209,7 @@ export const sharedResults = pgTable(
   },
   (table) => ({
     shareTokenIdx: index('shared_results_share_token_idx').on(table.shareToken),
+    conversationIdIdx: index('shared_results_conversation_id_idx').on(table.conversationId),
   }),
 );
 
@@ -237,7 +242,7 @@ export const conversationsRelations = relations(conversations, ({ one, many }) =
     references: [users.id],
   }),
   messages: many(messages),
-  sharedResult: one(sharedResults),
+  sharedResults: many(sharedResults),
 }));
 
 export const messagesRelations = relations(messages, ({ one, many }) => ({

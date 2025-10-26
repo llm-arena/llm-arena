@@ -18,10 +18,12 @@ if (Env.ANALYZE === 'true') {
   configWithPlugins = withBundleAnalyzer()(configWithPlugins);
 }
 
-if (!Env.NEXT_PUBLIC_SENTRY_DISABLED) {
+const sentryDisabled = Env.NEXT_PUBLIC_SENTRY_DISABLED === 'true';
+const hasSentryConfig = !!Env.SENTRY_ORGANIZATION && !!Env.SENTRY_PROJECT;
+if (!sentryDisabled && hasSentryConfig) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
-    org: Env.SENTRY_ORGANIZATION,
-    project: Env.SENTRY_PROJECT,
+    org: Env.SENTRY_ORGANIZATION as string,
+    project: Env.SENTRY_PROJECT as string,
     silent: !Env.CI,
 
     // For all available options, see:
