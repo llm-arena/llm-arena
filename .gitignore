@@ -63,3 +63,6 @@ build-archive.log
 
 .env
 .env.production
+
+# vscode
+.vscode/settings.json
