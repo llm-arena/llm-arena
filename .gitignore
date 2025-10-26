@@ -66,3 +66,4 @@ build-archive.log
 
 # vscode
 .vscode/settings.json
+.kiro/
