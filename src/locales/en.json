@@ -1,55 +1,27 @@
 {
-  "RootLayout": {
+  "PublicLayout": {
     "home_link": "Home",
-    "about_link": "About",
-    "counter_link": "Counter",
-    "portfolio_link": "Portfolio",
     "sign_in_link": "Sign in",
-    "sign_up_link": "Sign up"
+    "sign_up_link": "Sign up",
+    "dashboard_link": "Dashboard"
   },
   "BaseTemplate": {
-    "description": "Starter code for your Nextjs Boilerplate with Tailwind CSS",
-    "made_with": "Made with <author></author>."
+    "description": "AI Model Comparison Platform"
   },
   "Index": {
-    "meta_title": "Next.js Boilerplate Presentation",
-    "meta_description": "Next js Boilerplate is the perfect starter code for your project. Build your React application with the Next.js framework.",
-    "sponsors_title": "Sponsors"
-  },
-  "Counter": {
-    "meta_title": "Counter",
-    "meta_description": "An example of DB operation",
-    "security_powered_by": "Security, bot detection and rate limiting powered by"
-  },
-  "CounterForm": {
-    "presentation": "The counter is stored in the database and incremented by the value you provide.",
-    "label_increment": "Increment by",
-    "button_increment": "Increment",
-    "error_increment_range": "Value must be between 1 and 3"
-  },
-  "CurrentCount": {
-    "count": "Count: {count}"
-  },
-  "About": {
-    "meta_title": "About",
-    "meta_description": "About page description",
-    "about_paragraph": "Welcome to our About page! We are a team of passionate individuals dedicated to creating amazing software.",
-    "translation_powered_by": "Translation powered by"
-  },
-  "Portfolio": {
-    "meta_title": "Portfolio",
-    "meta_description": "Welcome to my portfolio page!",
-    "presentation": "Welcome to my portfolio page! Here you will find a carefully curated collection of my work and accomplishments. Through this portfolio, I'm to showcase my expertise, creativity, and the value I can bring to your projects.",
-    "portfolio_name": "Portfolio {name}",
-    "error_reporting_powered_by": "Error reporting powered by",
-    "coverage_powered_by": "Code coverage powered by"
-  },
-  "PortfolioSlug": {
-    "meta_title": "Portfolio {slug}",
-    "meta_description": "Portfolio {slug} description",
-    "header": "Portfolio {slug}",
-    "content": "Created a set of promotional materials and branding elements for a corporate event. Crafted a visually unified theme, encompassing a logo, posters, banners, and digital assets. Integrated the client's brand identity while infusing it with a contemporary and innovative approach.",
-    "code_review_powered_by": "Code review powered by"
+    "meta_title": "Model Arena - AI Model Comparison Platform",
+    "meta_description": "Compare and evaluate AI models side by side. Make informed decisions with comprehensive model analysis.",
+    "title": "Model Arena",
+    "description": "Compare AI models side by side and find the best fit for your needs",
+    "get_started": "Get Started",
+    "view_dashboard": "View Dashboard",
+    "features_title": "Features",
+    "feature_1_title": "Model Comparison",
+    "feature_1_description": "Compare multiple AI models side by side with detailed metrics and performance data",
+    "feature_2_title": "Real-time Evaluation",
+    "feature_2_description": "Test models in real-time and see immediate results for your specific use cases",
+    "feature_3_title": "Data-Driven Insights",
+    "feature_3_description": "Make informed decisions with comprehensive analytics and performance benchmarks"
   },
   "SignIn": {
     "meta_title": "Sign in",
