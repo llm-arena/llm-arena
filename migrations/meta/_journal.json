@@ -8,6 +8,27 @@
       "when": 1745518076143,
       "tag": "0000_init-db",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1745520000000,
+      "tag": "0001_supabase_integration",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745520100000,
+      "tag": "0002_fix_model_rankings_unique_constraint",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1745520200000,
+      "tag": "0003_add_shared_results_conversation_id_idx",
+      "breakpoints": true
     }
   ]
 }

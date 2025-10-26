@@ -2,7 +2,7 @@ import { Env } from '@/libs/Env';
 import * as Sentry from '@sentry/nextjs';
 
 const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
-  dsn: Env.SENTRY_DSN,
+  dsn: Env.NEXT_PUBLIC_SENTRY_DSN,
   spotlight: Env.NODE_ENV === 'development',
   integrations: [Sentry.consoleLoggingIntegration()],
   sendDefaultPii: true,
@@ -15,7 +15,8 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     if (Env.DATABASE_URL && Env.DATABASE_URL !== '') {
       try {
-        await import('./utils/DBMigration');
+        const { runMigrations } = await import('./utils/DBMigration');
+        await runMigrations();
       } catch (error) {
         if (Env.NODE_ENV === 'production') {
           console.error('Migration failed in production, stopping application');
@@ -29,7 +30,8 @@ export async function register() {
     }
   }
 
-  if (!Env.NEXT_PUBLIC_SENTRY_DISABLED) {
+  const sentryDisabled = (Env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
+  if (!sentryDisabled) {
     if (process.env.NEXT_RUNTIME === 'nodejs') {
       Sentry.init(sentryOptions);
     }

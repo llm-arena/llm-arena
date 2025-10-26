@@ -2,9 +2,23 @@
 -- This migration creates all necessary tables for the AI Model Arena with Supabase Auth integration
 
 -- Create enums
-CREATE TYPE "config_source" AS ENUM('manual', 'cherry-studio', 'newapi');
-CREATE TYPE "message_role" AS ENUM('user', 'assistant', 'system');
-CREATE TYPE "vote_type" AS ENUM('like', 'neutral', 'dislike');
+DO $$ BEGIN
+  CREATE TYPE "config_source" AS ENUM('manual', 'cherry-studio', 'newapi');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "message_role" AS ENUM('user', 'assistant', 'system');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "vote_type" AS ENUM('like', 'neutral', 'dislike');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Users table (synced with Supabase Auth)
 CREATE TABLE IF NOT EXISTS "users" (
@@ -139,6 +153,16 @@ ALTER TABLE "user_votes" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "model_rankings" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "files" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "shared_results" ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DO $$ 
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN (SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'public') LOOP
+    EXECUTE 'DROP POLICY IF EXISTS ' || quote_ident(r.policyname) || ' ON ' || quote_ident(r.tablename);
+  END LOOP;
+END $$;
 
 -- Users table policies
 CREATE POLICY "Users can view their own profile"
