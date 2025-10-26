@@ -1,14 +1,22 @@
 import path from 'node:path';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { createDbConnection } from './DBConnection';
+import { Env } from '@/libs/Env';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import postgres from 'postgres';
 
-// Create a new and dedicated database connection for running migrations
-const db = createDbConnection();
+const client = postgres(Env.DATABASE_URL, {
+  prepare: false, // Required for Supabase transaction pooling mode
+});
+const db = drizzle(client);
 
 try {
   await migrate(db, {
     migrationsFolder: path.join(process.cwd(), 'migrations'),
   });
+  console.log('Database migrations completed successfully');
+} catch (error) {
+  console.error('Database migration failed:', error instanceof Error ? error.message : error);
+  throw error;
 } finally {
-  await db.$client.end();
+  await client.end();
 }

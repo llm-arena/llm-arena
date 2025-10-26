@@ -1,18 +1,20 @@
 import { Env } from '@/libs/Env';
 import * as schema from '@/models/Schema';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
-// Need a database for production? Check out https://www.prisma.io/?via=nextjsboilerplate
-// Tested and compatible with Next.js Boilerplate
 export const createDbConnection = () => {
-  const pool = new Pool({
-    connectionString: Env.DATABASE_URL,
-    max: 1,
-  });
+  try {
+    const client = postgres(Env.DATABASE_URL, {
+      prepare: false,
+    });
 
-  return drizzle({
-    client: pool,
-    schema,
-  });
+    return drizzle(client, { schema });
+  } catch (error) {
+    console.error(
+      'Failed to create database connection:',
+      error instanceof Error ? error.message : error,
+    );
+    throw new Error('Database connection failed');
+  }
 };

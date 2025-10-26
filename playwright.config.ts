@@ -14,7 +14,7 @@ export default defineConfig<ChromaticConfig>({
   testDir: './tests',
   // Look for files with the .spec.js or .e2e.js extension
   testMatch: '*.@(spec|e2e).?(c|m)[jt]s?(x)',
-  // Timeout per test, test running locally are slower due to database connections with PGLite
+  // Timeout per test
   timeout: process.env.CI ? 30 * 1000 : 60 * 1000,
   // Fail the build on CI if you accidentally left test.only in the source code.
   forbidOnly: !!process.env.CI,
@@ -29,9 +29,7 @@ export default defineConfig<ChromaticConfig>({
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests
   webServer: {
-    command: process.env.CI
-      ? 'npx pglite-server --run "pnpm run start"'
-      : 'npx run-p db-server:memory dev:next',
+    command: process.env.CI ? 'pnpm run start' : 'pnpm run dev:next',
     url: baseURL,
     timeout: 2 * 60 * 1000,
     reuseExistingServer: !process.env.CI,
