@@ -1,41 +1,40 @@
+import { Env } from '@/libs/Env';
 import * as Sentry from '@sentry/nextjs';
 
 const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
-  // Sentry DSN
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-  // Enable Spotlight in development
-  spotlight: process.env.NODE_ENV === 'development',
-
+  dsn: Env.SENTRY_DSN,
+  spotlight: Env.NODE_ENV === 'development',
   integrations: [Sentry.consoleLoggingIntegration()],
-
-  // Adds request headers and IP for users, for more info visit
   sendDefaultPii: true,
-
-  // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,
-
-  // Enable logs to be sent to Sentry
   enableLogs: true,
-
-  // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
 };
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    // Run DB migrations
-    await import('./utils/DBMigration');
+    if (Env.DATABASE_URL && Env.DATABASE_URL !== '') {
+      try {
+        await import('./utils/DBMigration');
+      } catch (error) {
+        if (Env.NODE_ENV === 'production') {
+          console.error('Migration failed in production, stopping application');
+          throw error;
+        }
+        console.error('Migration failed in development mode, continuing without migrations');
+        console.error('Make sure your DATABASE_URL is correct and the database is accessible');
+      }
+    } else {
+      console.error('DATABASE_URL not configured, skipping migrations');
+    }
   }
 
-  if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+  if (!Env.NEXT_PUBLIC_SENTRY_DISABLED) {
     if (process.env.NEXT_RUNTIME === 'nodejs') {
-      // Node.js Sentry configuration
       Sentry.init(sentryOptions);
     }
 
     if (process.env.NEXT_RUNTIME === 'edge') {
-      // Edge Sentry configuration
       Sentry.init(sentryOptions);
     }
   }

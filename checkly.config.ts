@@ -1,5 +1,6 @@
 import { defineConfig } from 'checkly';
 import { EmailAlertChannel, Frequency } from 'checkly/constructs';
+import { Env } from './src/libs/Env';
 
 const sendDefaults = {
   sendFailure: true,
@@ -8,13 +9,13 @@ const sendDefaults = {
 };
 
 const emailChannel = new EmailAlertChannel('email-channel-1', {
-  address: process.env.CHECKLY_EMAIL_ADDRESS ?? '',
+  address: Env.CHECKLY_EMAIL_ADDRESS ?? '',
   ...sendDefaults,
 });
 
 export const config = defineConfig({
-  projectName: process.env.CHECKLY_PROJECT_NAME ?? '',
-  logicalId: process.env.CHECKLY_LOGICAL_ID ?? '',
+  projectName: Env.CHECKLY_PROJECT_NAME ?? '',
+  logicalId: Env.CHECKLY_LOGICAL_ID ?? '',
   repoUrl: 'https://github.com/model-arena/model-arena',
   checks: {
     locations: ['us-east-1', 'eu-west-1'],
@@ -27,9 +28,9 @@ export const config = defineConfig({
     },
     playwrightConfig: {
       use: {
-        baseURL: process.env.ENVIRONMENT_URL || process.env.NEXT_PUBLIC_APP_URL,
+        baseURL: Env.ENVIRONMENT_URL || Env.NEXT_PUBLIC_APP_URL,
         extraHTTPHeaders: {
-          'x-vercel-protection-bypass': process.env.VERCEL_BYPASS_TOKEN,
+          'x-vercel-protection-bypass': Env.VERCEL_BYPASS_TOKEN,
         },
       },
     },

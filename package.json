@@ -6,9 +6,9 @@
   "scripts": {
     "dev:spotlight": "npx @spotlightjs/spotlight",
     "dev:next": "next dev --turbopack",
-    "dev": "run-p db-server:file dev:*",
+    "dev": "run-p dev:*",
     "build:next": "next build",
-    "build": "run-p db-server:memory build:* --race",
+    "build": "pnpm run build:next",
     "start": "next start",
     "build-stats": "cross-env ANALYZE=true pnpm run build",
     "clean": "rimraf .next out coverage",
@@ -21,24 +21,23 @@
     "commit": "commit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "db-server:file": "pglite-server --db=local.db",
-    "db-server:memory": "pglite-server",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@arcjet/next": "1.0.0-beta.13",
-    "@clerk/localizations": "^3.26.2",
-    "@clerk/nextjs": "^6.33.7",
     "@hookform/resolvers": "^5.2.2",
     "@logtape/logtape": "^1.1.1",
     "@sentry/nextjs": "^10.20.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.50.1",
     "@t3-oss/env-nextjs": "^0.13.8",
     "drizzle-orm": "^0.44.6",
     "next": "^15.5.6",
     "next-intl": "^4.3.12",
     "pg": "^8.16.3",
+    "postgres": "^3.4.5",
     "posthog-js": "^1.278.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -51,7 +50,6 @@
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@commitlint/prompt-cli": "^20.1.0",
-    "@electric-sql/pglite-socket": "^0.0.15",
     "@faker-js/faker": "^10.1.0",
     "@lingual/i18n-check": "^0.8.12",
     "@next/bundle-analyzer": "^15.5.6",
@@ -69,11 +67,13 @@
     "cross-env": "^10.1.0",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.5",
+    "import-in-the-middle": "^2.0.0",
     "knip": "^5.66.2",
     "lefthook": "^1.13.6",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.5.6",
     "postcss-load-config": "^6.0.1",
+    "require-in-the-middle": "^8.0.1",
     "rimraf": "^6.0.1",
     "semantic-release": "^24.2.9",
     "tailwindcss": "^4.1.15",
@@ -83,9 +83,7 @@
     "vitest-browser-react": "^1.0.1"
   },
   "release": {
-    "branches": [
-      "main"
-    ],
+    "branches": ["main"],
     "plugins": [
       [
         "@semantic-release/commit-analyzer",

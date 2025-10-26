@@ -1,16 +1,17 @@
+import { Env } from '@/libs/Env';
 import { routing } from '@/libs/I18nRouting';
 
 export const getBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    return process.env.NEXT_PUBLIC_APP_URL;
+  if (Env.NEXT_PUBLIC_APP_URL) {
+    return Env.NEXT_PUBLIC_APP_URL;
   }
 
-  if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (Env.VERCEL_ENV === 'production' && Env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${Env.VERCEL_PROJECT_PRODUCTION_URL}`;
   }
 
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  if (Env.VERCEL_URL) {
+    return `https://${Env.VERCEL_URL}`;
   }
 
   return 'http://localhost:3000';
