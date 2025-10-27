@@ -2,9 +2,8 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import './src/libs/Env';
+import { Env } from './src/libs/Env';
 
-// Define the base Next.js configuration
 const baseConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
@@ -13,24 +12,19 @@ const baseConfig: NextConfig = {
   },
 };
 
-// Initialize the Next-Intl plugin
 let configWithPlugins = createNextIntlPlugin('./src/libs/I18n.ts')(baseConfig);
 
-// Conditionally enable bundle analysis
-if (process.env.ANALYZE === 'true') {
+if (Env.ANALYZE === 'true') {
   configWithPlugins = withBundleAnalyzer()(configWithPlugins);
 }
 
-// Conditionally enable Sentry configuration
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+const sentryDisabled = Env.NEXT_PUBLIC_SENTRY_DISABLED === 'true';
+const hasSentryConfig = !!Env.SENTRY_ORGANIZATION && !!Env.SENTRY_PROJECT;
+if (!sentryDisabled && hasSentryConfig) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
-    // For all available options, see:
-    // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-    org: process.env.SENTRY_ORGANIZATION,
-    project: process.env.SENTRY_PROJECT,
-
-    // Only print logs for uploading source maps in CI
-    silent: !process.env.CI,
+    org: Env.SENTRY_ORGANIZATION as string,
+    project: Env.SENTRY_PROJECT as string,
+    silent: !Env.CI,
 
     // For all available options, see:
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/

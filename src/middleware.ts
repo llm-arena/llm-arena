@@ -1,6 +1,7 @@
 import arcjet from '@/libs/Arcjet';
 import { detectBot } from '@arcjet/next';
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { createServerClient } from '@supabase/ssr';
+import type { CookieOptions } from '@supabase/ssr';
 import createMiddleware from 'next-intl/middleware';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -8,14 +9,18 @@ import { routing } from './libs/I18nRouting';
 
 const handleI18nRouting = createMiddleware(routing);
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/:locale/dashboard(.*)']);
+const PROTECTED_PATHS = ['/dashboard'];
+const AUTH_PATHS = ['/sign-in', '/sign-up'];
+const LOCALE_PREFIX_REGEX = /^\/[a-z]{2}(\/|$)/;
 
-const isAuthPage = createRouteMatcher([
-  '/sign-in(.*)',
-  '/:locale/sign-in(.*)',
-  '/sign-up(.*)',
-  '/:locale/sign-up(.*)',
-]);
+function stripLocalePrefix(pathname: string): string {
+  return pathname.replace(LOCALE_PREFIX_REGEX, '/');
+}
+
+function matchesAnyPath(pathname: string, paths: string[]): boolean {
+  const normalizedPath = stripLocalePrefix(pathname);
+  return paths.some((path) => normalizedPath.startsWith(path));
+}
 
 // Improve security with Arcjet
 const aj = arcjet.withRule(
@@ -31,9 +36,9 @@ const aj = arcjet.withRule(
   }),
 );
 
-export default async function middleware(request: NextRequest, event: NextFetchEvent) {
+export default async function middleware(request: NextRequest, _event: NextFetchEvent) {
   // Verify the request with Arcjet
-  // Use `process.env` instead of Env to reduce bundle size in middleware
+  // Use process.env instead of Env to reduce bundle size in middleware
   if (process.env.ARCJET_KEY) {
     const decision = await aj.protect(request);
 
@@ -42,21 +47,45 @@ export default async function middleware(request: NextRequest, event: NextFetchE
     }
   }
 
-  // Clerk keyless mode doesn't work with i18n, this is why we need to run the middleware conditionally
-  if (isAuthPage(request) || isProtectedRoute(request)) {
-    return clerkMiddleware(async (auth, req) => {
-      if (isProtectedRoute(req)) {
-        const locale = req.nextUrl.pathname.match(/(\/.*)\/dashboard/)?.at(1) ?? '';
+  const response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-        const signInUrl = new URL(`${locale}/sign-in`, req.url);
+  // Create Supabase client for middleware
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-        await auth.protect({
-          unauthenticatedUrl: signInUrl.toString(),
-        });
-      }
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        response.cookies.set({ name, value, ...options });
+      },
+      remove(name: string, options: CookieOptions) {
+        response.cookies.set({ name, value: '', ...options });
+      },
+    },
+  });
 
-      return handleI18nRouting(req);
-    })(request, event);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+  const locale = pathname.match(LOCALE_PREFIX_REGEX)?.[1] ?? '';
+
+  if (matchesAnyPath(pathname, PROTECTED_PATHS) && !user) {
+    const signInUrl = new URL(locale ? `/${locale}/sign-in` : '/sign-in', request.url);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  if (matchesAnyPath(pathname, AUTH_PATHS) && user) {
+    const dashboardUrl = new URL(locale ? `/${locale}/dashboard` : '/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
   }
 
   return handleI18nRouting(request);
