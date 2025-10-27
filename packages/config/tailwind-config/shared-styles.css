@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Custom theme variables for the monorepo */
+  /* Add your shared design tokens here */
+  
+  /* Example color variables */
+  /* --color-primary: oklch(0.72 0.11 221.19); */
+  /* --color-secondary: oklch(0.74 0.17 40.24); */
+  
+  /* Example spacing */
+  /* --spacing-base: 4px; */
+}
+
