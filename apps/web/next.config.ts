@@ -7,6 +7,7 @@ import { Env } from './src/libs/Env';
 const baseConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  transpilePackages: ['@model-arena/database', '@model-arena/ui', '@model-arena/auth'],
   outputFileTracingIncludes: {
     '/': ['./migrations/**/*'],
   },

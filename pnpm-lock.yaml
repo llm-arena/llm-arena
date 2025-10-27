@@ -176,14 +176,13 @@ importers:
         version: 1.0.1(@types/react@19.2.2)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
 
   packages/auth:
-    dependencies:
-      react:
-        specifier: ^19.2.0
-        version: 19.2.0
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
         version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -237,9 +236,6 @@ importers:
       lucide-react:
         specifier: ^0.546.0
         version: 0.546.0(react@19.2.0)
-      react:
-        specifier: ^19.2.0
-        version: 19.2.0
       react-resizable-panels:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -250,6 +246,9 @@ importers:
       '@types/react':
         specifier: ^19.2.2
         version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

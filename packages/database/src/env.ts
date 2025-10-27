@@ -3,9 +3,15 @@ import * as z from 'zod';
 
 export const Env = createEnv({
   server: {
-    DATABASE_URL: z.string().min(1),
+    DATABASE_URL: z.string().url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-    ENCRYPTION_KEY: z.string().length(64),
+    ENCRYPTION_KEY: z
+      .string()
+      .length(64)
+      .regex(
+        /^[0-9a-f]{64}$/i,
+        'ENCRYPTION_KEY must be a 64-character hexadecimal string',
+      ),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),

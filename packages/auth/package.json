@@ -5,11 +5,13 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {},
-  "dependencies": {
-    "react": "^19.2.0"
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
+    "react": "^19.2.0",
     "typescript": "^5.9.3"
   }
 }
