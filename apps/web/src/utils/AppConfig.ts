@@ -3,7 +3,7 @@ import type { LocalePrefixMode } from 'next-intl/routing';
 const localePrefix: LocalePrefixMode = 'as-needed';
 
 export const AppConfig = {
-  name: 'Model Arena',
+  name: 'lmring',
   locales: ['en', 'zh', 'fr'],
   defaultLocale: 'en',
   localePrefix,

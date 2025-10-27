@@ -1,4 +1,4 @@
-# LLM Arena
+# lmring
 
 A modern Next.js application built with TypeScript, Tailwind CSS, and best practices.
 

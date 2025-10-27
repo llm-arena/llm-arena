@@ -1,5 +1,5 @@
 -- Supabase Integration Migration
--- This migration creates all necessary tables for the AI Model Arena with Supabase Auth integration
+-- This migration creates all necessary tables for lmring with Supabase Auth integration
 
 -- Create enums
 DO $$ BEGIN
