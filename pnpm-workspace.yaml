@@ -1,0 +1,9 @@
+packages:
+  # Applications
+  - "apps/*"
+  
+  # Top-level packages
+  - "packages/*"
+  
+  # Config sub-packages
+  - "packages/config/*"
