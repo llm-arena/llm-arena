@@ -15,7 +15,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     if (Env.DATABASE_URL && Env.DATABASE_URL !== '') {
       try {
-        const { runMigrations } = await import('@model-arena/database');
+        const { runMigrations } = await import('@lmring/database');
         await runMigrations();
       } catch (error) {
         if (Env.NODE_ENV === 'production') {

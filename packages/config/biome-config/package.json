@@ -1,5 +1,5 @@
 {
-  "name": "@model-arena/biome-config",
+  "name": "@lmring/biome-config",
   "version": "1.0.0",
   "private": true,
   "files": ["biome.json"]

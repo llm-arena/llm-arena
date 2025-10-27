@@ -1,6 +1,6 @@
-# @model-arena/auth
+# @lmring/auth
 
-Authentication package for the model-arena monorepo.
+Authentication package for the lmring monorepo.
 
 ## Status
 
@@ -20,7 +20,7 @@ When implementing this package, consider:
 
 1. **Authentication Provider**: Better Auth, Auth.js, Supabase Auth, etc.
 2. **Session Storage**: Cookies, JWT tokens, database sessions
-3. **Integration**: Seamless integration with `@model-arena/database` and `apps/web`
+3. **Integration**: Seamless integration with `@lmring/database` and `apps/web`
 4. **Security**: Proper CSRF protection, secure cookie handling
 5. **Type Safety**: Full TypeScript support with proper type exports
 
@@ -28,13 +28,13 @@ When implementing this package, consider:
 
 ```typescript
 // Server-side
-import { auth, getCurrentUser } from '@model-arena/auth/server';
+import { auth, getCurrentUser } from '@lmring/auth/server';
 
 const session = await auth();
 const user = await getCurrentUser();
 
 // Client-side
-import { useSession, useUser } from '@model-arena/auth/client';
+import { useSession, useUser } from '@lmring/auth/client';
 
 function MyComponent() {
   const session = useSession();
@@ -43,7 +43,7 @@ function MyComponent() {
 }
 
 // Middleware
-import { authMiddleware } from '@model-arena/auth/middleware';
+import { authMiddleware } from '@lmring/auth/middleware';
 
 export default authMiddleware;
 ```

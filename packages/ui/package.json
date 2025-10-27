@@ -1,5 +1,5 @@
 {
-  "name": "@model-arena/ui",
+  "name": "@lmring/ui",
   "version": "1.0.0",
   "private": true,
   "main": "./src/index.ts",

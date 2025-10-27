@@ -1,5 +1,5 @@
 /**
- * @model-arena/auth - Authentication package
+ * @lmring/auth - Authentication package
  * 
  * This package will contain authentication logic for the monorepo.
  * To be implemented with authentication providers like Better Auth, Auth.js, etc.

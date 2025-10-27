@@ -16,7 +16,7 @@ const emailChannel = new EmailAlertChannel('email-channel-1', {
 export const config = defineConfig({
   projectName: Env.CHECKLY_PROJECT_NAME ?? '',
   logicalId: Env.CHECKLY_LOGICAL_ID ?? '',
-  repoUrl: 'https://github.com/model-arena/model-arena',
+  repoUrl: 'https://github.com/lmring/lmring',
   checks: {
     locations: ['us-east-1', 'eu-west-1'],
     tags: ['website'],
