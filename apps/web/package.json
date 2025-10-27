@@ -1,5 +1,5 @@
 {
-  "name": "@model-arena/web",
+  "name": "@lmring/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -24,8 +24,8 @@
     "@arcjet/next": "1.0.0-beta.13",
     "@hookform/resolvers": "^5.2.2",
     "@logtape/logtape": "^1.1.1",
-    "@model-arena/database": "workspace:*",
-    "@model-arena/ui": "workspace:*",
+    "@lmring/database": "workspace:*",
+    "@lmring/ui": "workspace:*",
     "@sentry/nextjs": "^10.22.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.50.1",
@@ -45,12 +45,12 @@
   "devDependencies": {
     "@chromatic-com/playwright": "^0.12.7",
     "@playwright/test": "^1.56.1",
-    "@model-arena/biome-config": "workspace:*",
-    "@model-arena/tailwind-config": "workspace:*",
+    "@lmring/biome-config": "workspace:*",
+    "@lmring/tailwind-config": "workspace:*",
     "@faker-js/faker": "^10.1.0",
     "@lingual/i18n-check": "^0.8.12",
     "@next/bundle-analyzer": "^15.5.6",
-    "@model-arena/typescript-config": "workspace:*",
+    "@lmring/typescript-config": "workspace:*",
     "checkly": "^6.8.1",
     "@spotlightjs/spotlight": "^4.1.4",
     "@tailwindcss/postcss": "^4.1.15",

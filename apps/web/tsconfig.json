@@ -1,5 +1,5 @@
 {
-  "extends": "@model-arena/typescript-config/nextjs.json",
+  "extends": "@lmring/typescript-config/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

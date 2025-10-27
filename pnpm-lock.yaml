@@ -32,10 +32,10 @@ importers:
       '@logtape/logtape':
         specifier: ^1.1.1
         version: 1.1.2
-      '@model-arena/database':
+      '@lmring/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@model-arena/ui':
+      '@lmring/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@sentry/nextjs':
@@ -93,13 +93,13 @@ importers:
       '@lingual/i18n-check':
         specifier: ^0.8.12
         version: 0.8.12
-      '@model-arena/biome-config':
+      '@lmring/biome-config':
         specifier: workspace:*
         version: link:../../packages/config/biome-config
-      '@model-arena/tailwind-config':
+      '@lmring/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/config/tailwind-config
-      '@model-arena/typescript-config':
+      '@lmring/typescript-config':
         specifier: workspace:*
         version: link:../../packages/config/typescript-config
       '@next/bundle-analyzer':

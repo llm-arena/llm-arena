@@ -1,6 +1,6 @@
 'use client';
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@model-arena/ui';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@lmring/ui';
 import { useTranslations } from 'next-intl';
 import { AppConfig } from '@/utils/AppConfig';
 

@@ -1,5 +1,5 @@
 {
-  "extends": "@model-arena/typescript-config/base.json",
+  "extends": "@lmring/typescript-config/base.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
