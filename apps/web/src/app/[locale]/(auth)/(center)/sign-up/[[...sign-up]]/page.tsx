@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { AuthFormWrapper } from '@/components/auth';
 
 type ISignUpPageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ callbackUrl?: string }>;
 };
 
 export async function generateMetadata(props: ISignUpPageProps): Promise<Metadata> {
@@ -20,24 +23,27 @@ export async function generateMetadata(props: ISignUpPageProps): Promise<Metadat
 
 export default async function SignUpPage(props: ISignUpPageProps) {
   const { locale } = await props.params;
+  const { callbackUrl } = await props.searchParams;
   setRequestLocale(locale);
   const t = await getTranslations({
     locale,
     namespace: 'SignUp',
   });
 
-  // TODO: Implement Supabase Auth sign-up form
-  // - Email/Password registration form
-  // - OAuth buttons (Google, GitHub, LinuxDO)
-  // - Email verification flow
-  // - Error handling
-  // - Redirect to dashboard on success
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md rounded-lg border p-8">
-        <h1 className="mb-6 text-2xl font-bold">{t('meta_title')}</h1>
-        <p className="text-gray-600">Sign-up page with Supabase Auth needs to be implemented.</p>
-        <p className="mt-4 text-sm text-gray-500">See IMPLEMENTATION_SUMMARY.md for details.</p>
+    <div className="w-full max-w-md space-y-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight">{t('meta_title')}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t('meta_description')}</p>
+      </div>
+
+      <AuthFormWrapper type="signup" callbackUrl={callbackUrl || `/${locale}/dashboard`} />
+
+      <div className="text-center text-sm">
+        <span className="text-muted-foreground">Already have an account? </span>
+        <Link href={`/${locale}/sign-in`} className="font-medium text-primary hover:underline">
+          Sign in
+        </Link>
       </div>
     </div>
   );

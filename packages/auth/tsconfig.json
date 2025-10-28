@@ -1,7 +1,7 @@
 {
   "extends": "@lmring/typescript-config/base.json",
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["ES2017", "dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
     "composite": true
   },

@@ -1,16 +1,19 @@
 import { detectBot } from '@arcjet/next';
-import type { CookieOptions } from '@supabase/ssr';
-import { createServerClient } from '@supabase/ssr';
+import type { AuthUser } from '@lmring/auth';
+import { isDisabled, isPending, UserStatus } from '@lmring/auth';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import arcjet from '@/libs/Arcjet';
+import { auth } from '@/libs/Auth';
+import { logger } from '@/libs/Logger';
 import { routing } from './libs/I18nRouting';
 
 const handleI18nRouting = createMiddleware(routing);
 
 const PROTECTED_PATHS = ['/dashboard'];
 const AUTH_PATHS = ['/sign-in', '/sign-up'];
+const ACCOUNT_DISABLED_PATH = '/account-disabled';
 const LOCALE_PREFIX_REGEX = /^\/[a-z]{2}(\/|$)/;
 
 function stripLocalePrefix(pathname: string): string {
@@ -47,42 +50,73 @@ export default async function middleware(request: NextRequest, _event: NextFetch
     }
   }
 
-  const response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
-
-  // Create Supabase client for middleware
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        response.cookies.set({ name, value, ...options });
-      },
-      remove(name: string, options: CookieOptions) {
-        response.cookies.set({ name, value: '', ...options });
-      },
-    },
-  });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { pathname } = request.nextUrl;
-  const locale = pathname.match(LOCALE_PREFIX_REGEX)?.[1] ?? '';
+  const locale = pathname.match(LOCALE_PREFIX_REGEX)?.[0]?.replace(/\//g, '') ?? '';
 
+  // Get session from Better-Auth
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
+  const user = session?.user;
+
+  // Check user status if session exists
+  if (user) {
+    // Type assertion to access custom user fields
+    const authUser = user as unknown as AuthUser;
+
+    // Check if user is disabled
+    if (isDisabled(authUser)) {
+      logger.warn('Disabled user attempted to access resource', {
+        userId: authUser.id,
+        email: authUser.email,
+        pathname,
+      });
+
+      const normalizedPath = stripLocalePrefix(pathname);
+      if (normalizedPath !== ACCOUNT_DISABLED_PATH) {
+        const accountDisabledUrl = new URL(
+          locale ? `/${locale}${ACCOUNT_DISABLED_PATH}` : ACCOUNT_DISABLED_PATH,
+          request.url,
+        );
+        return NextResponse.redirect(accountDisabledUrl);
+      }
+    }
+
+    // Check if user is pending
+    if (isPending(authUser)) {
+      logger.warn('Pending user attempted to access resource', {
+        userId: authUser.id,
+        email: authUser.email,
+        pathname,
+      });
+
+      const normalizedPath = stripLocalePrefix(pathname);
+      if (normalizedPath !== ACCOUNT_DISABLED_PATH) {
+        const accountDisabledUrl = new URL(
+          locale ? `/${locale}${ACCOUNT_DISABLED_PATH}` : ACCOUNT_DISABLED_PATH,
+          request.url,
+        );
+        return NextResponse.redirect(accountDisabledUrl);
+      }
+    }
+
+    // If user is on account disabled page but is actually active, redirect to home
+    const normalizedPath = stripLocalePrefix(pathname);
+    if (normalizedPath === ACCOUNT_DISABLED_PATH && authUser.status === UserStatus.ACTIVE) {
+      const homeUrl = new URL(locale ? `/${locale}` : '/', request.url);
+      return NextResponse.redirect(homeUrl);
+    }
+  }
+
+  // Redirect to sign-in if accessing protected paths without authentication
   if (matchesAnyPath(pathname, PROTECTED_PATHS) && !user) {
     const signInUrl = new URL(locale ? `/${locale}/sign-in` : '/sign-in', request.url);
+    signInUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signInUrl);
   }
 
+  // Redirect to dashboard if accessing auth paths while authenticated
   if (matchesAnyPath(pathname, AUTH_PATHS) && user) {
     const dashboardUrl = new URL(locale ? `/${locale}/dashboard` : '/dashboard', request.url);
     return NextResponse.redirect(dashboardUrl);

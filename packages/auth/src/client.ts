@@ -1,15 +1,21 @@
 /**
  * Client-side authentication hooks and utilities
- * To be implemented
  */
 
 'use client';
 
-export const useSession = () => {
-  throw new Error('useSession not implemented yet');
-};
+import { createAuthClient } from 'better-auth/react';
 
-export const useUser = () => {
-  throw new Error('useUser not implemented yet');
-};
+interface CreateAuthClientOptions {
+  baseURL: string;
+}
 
+export function createClient(options: CreateAuthClientOptions) {
+  const authClient = createAuthClient({
+    baseURL: options.baseURL,
+  });
+
+  return authClient;
+}
+
+export type AuthClient = ReturnType<typeof createClient>;

@@ -16,6 +16,8 @@ import {
 export const configSourceEnum = pgEnum('config_source', ['manual', 'cherry-studio', 'newapi']);
 export const roleEnum = pgEnum('message_role', ['user', 'assistant', 'system']);
 export const voteTypeEnum = pgEnum('vote_type', ['like', 'neutral', 'dislike']);
+export const userRoleEnum = pgEnum('user_role', ['admin', 'user']);
+export const userStatusEnum = pgEnum('user_status', ['active', 'disabled', 'pending']);
 
 // Users table (synced with Supabase Auth)
 export const users = pgTable(
@@ -26,11 +28,32 @@ export const users = pgTable(
     username: text('username').unique(),
     fullName: text('full_name'),
     avatarUrl: text('avatar_url'),
+    
+    // Better-Auth fields
+    role: userRoleEnum('role').default('user').notNull(),
+    status: userStatusEnum('status').default('active').notNull(),
+    
+    // OAuth identifiers (reserved for future use)
+    githubId: text('github_id').unique(),
+    googleId: text('google_id').unique(),
+    linuxdoId: text('linuxdo_id').unique(),
+    
+    // Invitation system (reserved for future use)
+    inviterId: uuid('inviter_id').references((): any => users.id),
+    
+    // Soft delete (reserved for future use)
+    deletedAt: timestamp('deleted_at'),
+    
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (table) => ({
     emailIdx: index('users_email_idx').on(table.email),
+    githubIdIdx: index('users_github_id_idx').on(table.githubId),
+    googleIdIdx: index('users_google_id_idx').on(table.googleId),
+    linuxdoIdIdx: index('users_linuxdo_id_idx').on(table.linuxdoId),
+    inviterIdIdx: index('users_inviter_id_idx').on(table.inviterId),
+    deletedAtIdx: index('users_deleted_at_idx').on(table.deletedAt),
   }),
 );
 
@@ -213,6 +236,71 @@ export const sharedResults = pgTable(
   }),
 );
 
+// Better-Auth tables
+// Session table
+export const session = pgTable(
+  'session',
+  {
+    id: text('id').primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    token: text('token').notNull().unique(),
+    ipAddress: text('ip_address'),
+    userAgent: text('user_agent'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdIdx: index('session_user_id_idx').on(table.userId),
+    tokenIdx: index('session_token_idx').on(table.token),
+  }),
+);
+
+// Account table (OAuth)
+export const account = pgTable(
+  'account',
+  {
+    id: text('id').primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    accountId: text('account_id').notNull(),
+    providerId: text('provider_id').notNull(),
+    accessToken: text('access_token'),
+    refreshToken: text('refresh_token'),
+    idToken: text('id_token'),
+    expiresAt: timestamp('expires_at'),
+    password: text('password'), // For email/password
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdIdx: index('account_user_id_idx').on(table.userId),
+    providerAccountIdx: unique('account_provider_account_unique').on(
+      table.providerId,
+      table.accountId,
+    ),
+  }),
+);
+
+// Verification table
+export const verification = pgTable(
+  'verification',
+  {
+    id: text('id').primaryKey(),
+    identifier: text('identifier').notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    identifierIdx: index('verification_identifier_idx').on(table.identifier),
+  }),
+);
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   preferences: one(userPreferences),
@@ -220,6 +308,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   conversations: many(conversations),
   votes: many(userVotes),
   files: many(files),
+  sessions: many(session),
+  accounts: many(account),
 }));
 
 export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
@@ -284,6 +374,20 @@ export const sharedResultsRelations = relations(sharedResults, ({ one }) => ({
   }),
 }));
 
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(users, {
+    fields: [session.userId],
+    references: [users.id],
+  }),
+}));
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(users, {
+    fields: [account.userId],
+    references: [users.id],
+  }),
+}));
+
 // Type exports for use in the application
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -305,4 +409,10 @@ export type File = typeof files.$inferSelect;
 export type NewFile = typeof files.$inferInsert;
 export type SharedResult = typeof sharedResults.$inferSelect;
 export type NewSharedResult = typeof sharedResults.$inferInsert;
+export type Session = typeof session.$inferSelect;
+export type NewSession = typeof session.$inferInsert;
+export type Account = typeof account.$inferSelect;
+export type NewAccount = typeof account.$inferInsert;
+export type Verification = typeof verification.$inferSelect;
+export type NewVerification = typeof verification.$inferInsert;
 

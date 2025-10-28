@@ -24,6 +24,7 @@
     "@arcjet/next": "1.0.0-beta.13",
     "@hookform/resolvers": "^5.2.2",
     "@logtape/logtape": "^1.1.1",
+    "@lmring/auth": "workspace:*",
     "@lmring/database": "workspace:*",
     "@lmring/ui": "workspace:*",
     "@sentry/nextjs": "^10.22.0",
