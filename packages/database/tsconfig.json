@@ -1,7 +1,7 @@
 {
   "extends": "@lmring/typescript-config/base.json",
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": ["ESNext"],
     "outDir": "dist",
     "rootDir": "src",
     "composite": true,
