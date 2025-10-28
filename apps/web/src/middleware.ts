@@ -69,7 +69,6 @@ export default async function middleware(request: NextRequest, _event: NextFetch
     if (isDisabled(authUser)) {
       logger.warn('Disabled user attempted to access resource', {
         userId: authUser.id,
-        email: authUser.email,
         pathname,
       });
 
@@ -87,7 +86,6 @@ export default async function middleware(request: NextRequest, _event: NextFetch
     if (isPending(authUser)) {
       logger.warn('Pending user attempted to access resource', {
         userId: authUser.id,
-        email: authUser.email,
         pathname,
       });
 

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/libs/AuthClient';
+import { sanitizeCallbackUrl } from '@/utils/redirect';
 
 interface SignInFormProps {
   callbackUrl?: string;
@@ -10,6 +11,8 @@ interface SignInFormProps {
 }
 
 export function SignInForm({ callbackUrl = '/dashboard', showOAuth = false }: SignInFormProps) {
+  // Sanitize callback URL to prevent open redirect vulnerabilities
+  const safeCallbackUrl = sanitizeCallbackUrl(callbackUrl);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +37,7 @@ export function SignInForm({ callbackUrl = '/dashboard', showOAuth = false }: Si
       }
 
       // Redirect to callback URL or dashboard
-      router.push(callbackUrl);
+      router.push(safeCallbackUrl);
       router.refresh();
     } catch (_err) {
       setError('An unexpected error occurred');
@@ -47,12 +50,19 @@ export function SignInForm({ callbackUrl = '/dashboard', showOAuth = false }: Si
     setLoading(true);
 
     try {
-      await authClient.signIn.social({
+      const result = await authClient.signIn.social({
         provider,
-        callbackURL: callbackUrl,
+        callbackURL: safeCallbackUrl,
       });
+
+      if (result?.error) {
+        setError(result.error.message || `Failed to sign in with ${provider}`);
+        setLoading(false);
+        return;
+      }
+
     } catch (_err) {
-      setError(`Failed to sign in with ${provider}`);
+      setError('An unexpected error occurred');
       setLoading(false);
     }
   };

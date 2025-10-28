@@ -3,25 +3,6 @@
  */
 
 /**
- * Custom error class for authentication-related errors
- */
-export class AuthError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public statusCode: number = 400,
-  ) {
-    super(message);
-    this.name = 'AuthError';
-    
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AuthError);
-    }
-  }
-}
-
-/**
  * Authentication error codes
  */
 export const AuthErrorCodes = {
@@ -41,6 +22,25 @@ export const AuthErrorCodes = {
 } as const;
 
 export type AuthErrorCode = typeof AuthErrorCodes[keyof typeof AuthErrorCodes];
+
+/**
+ * Custom error class for authentication-related errors
+ */
+export class AuthError extends Error {
+  constructor(
+    message: string,
+    public code: AuthErrorCode,
+    public statusCode: number = 400,
+  ) {
+    super(message);
+    this.name = 'AuthError';
+    
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, AuthError);
+    }
+  }
+}
 
 /**
  * Helper function to create an AuthError with a specific code

@@ -111,7 +111,6 @@ export function createAuth(options: CreateAuthOptions) {
               if (user.status === UserStatus.DISABLED) {
                 logger.warn('Disabled user attempted to sign in', {
                   userId: user.id,
-                  email: user.email,
                   status: user.status,
                   errorCode: AuthErrorCodes.USER_DISABLED,
                 });
@@ -123,7 +122,6 @@ export function createAuth(options: CreateAuthOptions) {
               if (user.status === UserStatus.PENDING) {
                 logger.warn('Pending user attempted to sign in', {
                   userId: user.id,
-                  email: user.email,
                   status: user.status,
                   errorCode: AuthErrorCodes.USER_PENDING,
                 });
@@ -135,7 +133,6 @@ export function createAuth(options: CreateAuthOptions) {
               if (user.status === UserStatus.ACTIVE) {
                 logger.info('User signed in successfully', {
                   userId: user.id,
-                  email: user.email,
                   role: user.role,
                   status: user.status,
                   provider: ctx.path?.includes('social') ? 'oauth' : 'email',

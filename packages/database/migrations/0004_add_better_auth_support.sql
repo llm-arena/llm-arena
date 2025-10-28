@@ -22,7 +22,7 @@ ALTER TABLE "users"
   ADD COLUMN IF NOT EXISTS "google_id" TEXT,
   ADD COLUMN IF NOT EXISTS "linuxdo_id" TEXT,
   ADD COLUMN IF NOT EXISTS "inviter_id" UUID,
-  ADD COLUMN IF NOT EXISTS "deleted_at" TIMESTAMP;
+  ADD COLUMN IF NOT EXISTS "deleted_at" TIMESTAMPTZ;
 
 -- Add unique constraints for OAuth IDs
 DO $$ BEGIN
@@ -51,10 +51,7 @@ EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
 
--- Add indexes for new user fields
-CREATE INDEX IF NOT EXISTS "users_github_id_idx" ON "users"("github_id");
-CREATE INDEX IF NOT EXISTS "users_google_id_idx" ON "users"("google_id");
-CREATE INDEX IF NOT EXISTS "users_linuxdo_id_idx" ON "users"("linuxdo_id");
+-- Add indexes for new user fields (OAuth ID fields already have indexes from UNIQUE constraints)
 CREATE INDEX IF NOT EXISTS "users_inviter_id_idx" ON "users"("inviter_id");
 CREATE INDEX IF NOT EXISTS "users_deleted_at_idx" ON "users"("deleted_at");
 
@@ -62,16 +59,16 @@ CREATE INDEX IF NOT EXISTS "users_deleted_at_idx" ON "users"("deleted_at");
 CREATE TABLE IF NOT EXISTS "session" (
   "id" TEXT PRIMARY KEY,
   "user_id" UUID NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
-  "expires_at" TIMESTAMP NOT NULL,
+  "expires_at" TIMESTAMPTZ NOT NULL,
   "token" TEXT NOT NULL UNIQUE,
   "ip_address" TEXT,
   "user_agent" TEXT,
-  "created_at" TIMESTAMP DEFAULT NOW() NOT NULL,
-  "updated_at" TIMESTAMP DEFAULT NOW() NOT NULL
+  "created_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  "updated_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS "session_user_id_idx" ON "session"("user_id");
-CREATE INDEX IF NOT EXISTS "session_token_idx" ON "session"("token");
+-- Note: session.token already has an index from UNIQUE constraint
 
 -- Create Better-Auth account table (OAuth)
 CREATE TABLE IF NOT EXISTS "account" (
@@ -82,10 +79,10 @@ CREATE TABLE IF NOT EXISTS "account" (
   "access_token" TEXT,
   "refresh_token" TEXT,
   "id_token" TEXT,
-  "expires_at" TIMESTAMP,
+  "expires_at" TIMESTAMPTZ,
   "password" TEXT,
-  "created_at" TIMESTAMP DEFAULT NOW() NOT NULL,
-  "updated_at" TIMESTAMP DEFAULT NOW() NOT NULL,
+  "created_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  "updated_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   CONSTRAINT "account_provider_account_unique" UNIQUE("provider_id", "account_id")
 );
 
@@ -96,37 +93,43 @@ CREATE TABLE IF NOT EXISTS "verification" (
   "id" TEXT PRIMARY KEY,
   "identifier" TEXT NOT NULL,
   "value" TEXT NOT NULL,
-  "expires_at" TIMESTAMP NOT NULL,
-  "created_at" TIMESTAMP DEFAULT NOW() NOT NULL,
-  "updated_at" TIMESTAMP DEFAULT NOW() NOT NULL
+  "expires_at" TIMESTAMPTZ NOT NULL,
+  "created_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  "updated_at" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS "verification_identifier_idx" ON "verification"("identifier");
 
--- Enable Row Level Security on new tables
-ALTER TABLE "session" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "account" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "verification" ENABLE ROW LEVEL SECURITY;
+-- Disable Row Level Security on Better-Auth tables
+-- Better-Auth uses direct database connection (postgres.js via Drizzle) which doesn't have
+-- Supabase auth context (auth.uid() or auth.role()). These tables are only accessed by
+-- Better-Auth server-side code, not by client-side Supabase clients.
+-- Security is handled by Better-Auth at the application layer.
+ALTER TABLE "session" DISABLE ROW LEVEL SECURITY;
+ALTER TABLE "account" DISABLE ROW LEVEL SECURITY;
+ALTER TABLE "verification" DISABLE ROW LEVEL SECURITY;
 
--- Session table policies
-CREATE POLICY "Users can view their own sessions"
-  ON "session" FOR SELECT
-  USING (auth.uid() = user_id);
+-- Create function to automatically update updated_at timestamp
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE POLICY "Users can delete their own sessions"
-  ON "session" FOR DELETE
-  USING (auth.uid() = user_id);
+-- Add triggers to automatically update updated_at for each table
+CREATE TRIGGER session_set_updated_at
+  BEFORE UPDATE ON "session"
+  FOR EACH ROW
+  EXECUTE FUNCTION set_updated_at();
 
--- Account table policies
-CREATE POLICY "Users can view their own accounts"
-  ON "account" FOR SELECT
-  USING (auth.uid() = user_id);
+CREATE TRIGGER account_set_updated_at
+  BEFORE UPDATE ON "account"
+  FOR EACH ROW
+  EXECUTE FUNCTION set_updated_at();
 
--- Verification table policies (handled by Better-Auth internally)
-CREATE POLICY "Anyone can insert verification records"
-  ON "verification" FOR INSERT
-  WITH CHECK (true);
-
-CREATE POLICY "Anyone can select verification records"
-  ON "verification" FOR SELECT
-  USING (true);
+CREATE TRIGGER verification_set_updated_at
+  BEFORE UPDATE ON "verification"
+  FOR EACH ROW
+  EXECUTE FUNCTION set_updated_at();

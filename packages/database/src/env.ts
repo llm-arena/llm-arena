@@ -3,7 +3,7 @@ import * as z from 'zod';
 
 export const Env = createEnv({
   server: {
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
     DEPLOYMENT_MODE: z.enum(['saas', 'selfhost']).default('saas'),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     ENCRYPTION_KEY: z
@@ -15,7 +15,7 @@ export const Env = createEnv({
       ),
   },
   client: {
-    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_URL: z.url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   },
   shared: {

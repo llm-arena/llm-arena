@@ -10,6 +10,7 @@ import {
   timestamp,
   unique,
   uuid,
+  type PgColumn,
 } from 'drizzle-orm/pg-core';
 
 // Enums
@@ -39,19 +40,17 @@ export const users = pgTable(
     linuxdoId: text('linuxdo_id').unique(),
     
     // Invitation system (reserved for future use)
-    inviterId: uuid('inviter_id').references((): any => users.id),
+    inviterId: uuid('inviter_id').references((): PgColumn => users.id),
     
     // Soft delete (reserved for future use)
-    deletedAt: timestamp('deleted_at'),
-    
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     emailIdx: index('users_email_idx').on(table.email),
-    githubIdIdx: index('users_github_id_idx').on(table.githubId),
-    googleIdIdx: index('users_google_id_idx').on(table.googleId),
-    linuxdoIdIdx: index('users_linuxdo_id_idx').on(table.linuxdoId),
+    // Note: githubId, googleId, linuxdoId have UNIQUE constraints which create indexes automatically
     inviterIdIdx: index('users_inviter_id_idx').on(table.inviterId),
     deletedAtIdx: index('users_deleted_at_idx').on(table.deletedAt),
   }),
@@ -70,8 +69,8 @@ export const userPreferences = pgTable(
     language: text('language').default('en'),
     defaultModels: jsonb('default_models').$type<string[]>(),
     configSource: configSourceEnum('config_source').default('manual'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('user_preferences_user_id_idx').on(table.userId),
@@ -89,8 +88,8 @@ export const apiKeys = pgTable(
     providerName: text('provider_name').notNull(),
     encryptedKey: text('encrypted_key').notNull(),
     configSource: configSourceEnum('config_source').default('manual'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('api_keys_user_id_idx').on(table.userId),
@@ -106,8 +105,8 @@ export const conversations = pgTable(
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
     title: text('title').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('conversations_user_id_idx').on(table.userId),
@@ -124,7 +123,7 @@ export const messages = pgTable(
       .notNull(),
     role: roleEnum('role').notNull(),
     content: text('content').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     conversationIdIdx: index('messages_conversation_id_idx').on(table.conversationId),
@@ -144,7 +143,7 @@ export const modelResponses = pgTable(
     responseContent: text('response_content').notNull(),
     tokensUsed: integer('tokens_used'),
     responseTimeMs: integer('response_time_ms'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     messageIdIdx: index('model_responses_message_id_idx').on(table.messageId),
@@ -166,8 +165,8 @@ export const userVotes = pgTable(
       .references(() => modelResponses.id, { onDelete: 'cascade' })
       .notNull(),
     voteType: voteTypeEnum('vote_type').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('user_votes_user_id_idx').on(table.userId),
@@ -188,7 +187,7 @@ export const modelRankings = pgTable(
     totalDislikes: integer('total_dislikes').default(0).notNull(),
     totalNeutral: integer('total_neutral').default(0).notNull(),
     rankingScore: real('ranking_score').default(0).notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     rankingScoreIdx: index('model_rankings_ranking_score_idx').on(table.rankingScore),
@@ -211,7 +210,7 @@ export const files = pgTable(
     mimeType: text('mime_type').notNull(),
     fileData: text('file_data').notNull(), // Base64 encoded for simplicity with Drizzle
     sizeBytes: integer('size_bytes').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('files_user_id_idx').on(table.userId),
@@ -227,8 +226,8 @@ export const sharedResults = pgTable(
       .references(() => conversations.id, { onDelete: 'cascade' })
       .notNull(),
     shareToken: text('share_token').notNull().unique(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    expiresAt: timestamp('expires_at'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
   },
   (table) => ({
     shareTokenIdx: index('shared_results_share_token_idx').on(table.shareToken),
@@ -245,16 +244,16 @@ export const session = pgTable(
     userId: uuid('user_id')
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
-    expiresAt: timestamp('expires_at').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     token: text('token').notNull().unique(),
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('session_user_id_idx').on(table.userId),
-    tokenIdx: index('session_token_idx').on(table.token),
+    // Note: token has a UNIQUE constraint which creates an index automatically
   }),
 );
 
@@ -271,10 +270,10 @@ export const account = pgTable(
     accessToken: text('access_token'),
     refreshToken: text('refresh_token'),
     idToken: text('id_token'),
-    expiresAt: timestamp('expires_at'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
     password: text('password'), // For email/password
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index('account_user_id_idx').on(table.userId),
@@ -292,9 +291,9 @@ export const verification = pgTable(
     id: text('id').primaryKey(),
     identifier: text('identifier').notNull(),
     value: text('value').notNull(),
-    expiresAt: timestamp('expires_at').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     identifierIdx: index('verification_identifier_idx').on(table.identifier),

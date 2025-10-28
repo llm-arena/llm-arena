@@ -3,12 +3,13 @@
  */
 
 import { createAuth } from '@lmring/auth';
+import { getAuthBaseUrl } from '@/utils/Helpers';
 import { Env } from './Env';
 import { logger } from './Logger';
 
 export const auth = createAuth({
   deploymentMode: Env.DEPLOYMENT_MODE,
-  baseURL: Env.BETTER_AUTH_URL || Env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  baseURL: getAuthBaseUrl(),
   secret: Env.BETTER_AUTH_SECRET,
   githubClientId: Env.GITHUB_CLIENT_ID,
   githubClientSecret: Env.GITHUB_CLIENT_SECRET,

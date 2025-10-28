@@ -5,9 +5,10 @@
 'use client';
 
 import { createClient } from '@lmring/auth/client';
+import { getAuthBaseUrl } from '@/utils/Helpers';
 
 export const authClient = createClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  baseURL: getAuthBaseUrl(),
 });
 
 // Export useSession hook from the auth client instance
