@@ -1,32 +1,63 @@
 /**
  * @lmring/auth - Authentication package
  * 
- * This package will contain authentication logic for the monorepo.
- * To be implemented with authentication providers like Better Auth, Auth.js, etc.
+ * Better-Auth based authentication system for the monorepo.
+ * Supports both SaaS (with OAuth) and self-hosted (Email/Password only) modes.
  */
 
-// Export placeholder types for now
-export type AuthUser = {
-  id: string;
-  email: string;
-  name?: string;
-};
+// Export types
+export type { AuthConfig, AuthUser, AuthSession } from './types';
 
-export type AuthSession = {
-  user: AuthUser;
-  sessionId: string;
-};
+// Export server-side authentication
+export { createAuth } from './server';
+export type { Auth, Session } from './server';
 
-// Placeholder exports - to be implemented
-export const auth = () => {
-  throw new Error('Auth not implemented yet');
-};
+// Export client-side authentication
+export { createClient } from './client';
+export type { AuthClient } from './client';
 
-export const signIn = () => {
-  throw new Error('SignIn not implemented yet');
-};
+// Export configuration
+export { getAuthConfig } from './config';
 
-export const signOut = () => {
-  throw new Error('SignOut not implemented yet');
-};
+// Export permissions and role utilities
+export {
+  UserRole,
+  isAdmin,
+  hasRole,
+  requireAdmin,
+  requireRole,
+  canPerformAdminActions,
+  getRoleDisplayName,
+} from './permissions';
+export type { UserRoleType } from './permissions';
+
+// Export status utilities
+export {
+  UserStatus,
+  isActive,
+  isDisabled,
+  isPending,
+  hasStatus,
+  requireActive,
+  canSignIn,
+  getStatusDisplayName,
+  getStatusDescription,
+} from './status';
+export type { UserStatusType } from './status';
+
+// Export error types and utilities
+export {
+  AuthError,
+  AuthErrorCodes,
+  createAuthError,
+  isAuthError,
+} from './errors';
+export type { AuthErrorCode } from './errors';
+
+// Export logger utilities
+export {
+  createAuthLogger,
+  authLogger,
+} from './logger';
+export type { AuthLogger, LogContext } from './logger';
 

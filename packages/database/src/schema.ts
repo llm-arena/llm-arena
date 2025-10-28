@@ -10,12 +10,15 @@ import {
   timestamp,
   unique,
   uuid,
+  type PgColumn,
 } from 'drizzle-orm/pg-core';
 
 // Enums
 export const configSourceEnum = pgEnum('config_source', ['manual', 'cherry-studio', 'newapi']);
 export const roleEnum = pgEnum('message_role', ['user', 'assistant', 'system']);
 export const voteTypeEnum = pgEnum('vote_type', ['like', 'neutral', 'dislike']);
+export const userRoleEnum = pgEnum('user_role', ['admin', 'user']);
+export const userStatusEnum = pgEnum('user_status', ['active', 'disabled', 'pending']);
 
 // Users table (synced with Supabase Auth)
 export const users = pgTable(
@@ -26,12 +29,31 @@ export const users = pgTable(
     username: text('username').unique(),
     fullName: text('full_name'),
     avatarUrl: text('avatar_url'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    
+    // Better-Auth fields
+    role: userRoleEnum('role').default('user').notNull(),
+    status: userStatusEnum('status').default('active').notNull(),
+    
+    // OAuth identifiers (reserved for future use)
+    githubId: text('github_id').unique(),
+    googleId: text('google_id').unique(),
+    linuxdoId: text('linuxdo_id').unique(),
+    
+    // Invitation system (reserved for future use)
+    inviterId: uuid('inviter_id').references((): PgColumn => users.id),
+    
+    // Soft delete (reserved for future use)
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    emailIdx: index('users_email_idx').on(table.email),
-  }),
+  (table) => [
+    index('users_email_idx').on(table.email),
+    // Note: githubId, googleId, linuxdoId have UNIQUE constraints which create indexes automatically
+    index('users_inviter_id_idx').on(table.inviterId),
+    index('users_deleted_at_idx').on(table.deletedAt),
+  ],
 );
 
 // User preferences
@@ -47,12 +69,12 @@ export const userPreferences = pgTable(
     language: text('language').default('en'),
     defaultModels: jsonb('default_models').$type<string[]>(),
     configSource: configSourceEnum('config_source').default('manual'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('user_preferences_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('user_preferences_user_id_idx').on(table.userId),
+  ],
 );
 
 // API Keys (encrypted)
@@ -66,12 +88,12 @@ export const apiKeys = pgTable(
     providerName: text('provider_name').notNull(),
     encryptedKey: text('encrypted_key').notNull(),
     configSource: configSourceEnum('config_source').default('manual'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('api_keys_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('api_keys_user_id_idx').on(table.userId),
+  ],
 );
 
 // Conversations
@@ -83,12 +105,12 @@ export const conversations = pgTable(
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
     title: text('title').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('conversations_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('conversations_user_id_idx').on(table.userId),
+  ],
 );
 
 // Messages
@@ -101,11 +123,11 @@ export const messages = pgTable(
       .notNull(),
     role: roleEnum('role').notNull(),
     content: text('content').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    conversationIdIdx: index('messages_conversation_id_idx').on(table.conversationId),
-  }),
+  (table) => [
+    index('messages_conversation_id_idx').on(table.conversationId),
+  ],
 );
 
 // Model responses
@@ -121,11 +143,11 @@ export const modelResponses = pgTable(
     responseContent: text('response_content').notNull(),
     tokensUsed: integer('tokens_used'),
     responseTimeMs: integer('response_time_ms'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    messageIdIdx: index('model_responses_message_id_idx').on(table.messageId),
-  }),
+  (table) => [
+    index('model_responses_message_id_idx').on(table.messageId),
+  ],
 );
 
 // User votes
@@ -143,15 +165,15 @@ export const userVotes = pgTable(
       .references(() => modelResponses.id, { onDelete: 'cascade' })
       .notNull(),
     voteType: voteTypeEnum('vote_type').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('user_votes_user_id_idx').on(table.userId),
-    messageIdIdx: index('user_votes_message_id_idx').on(table.messageId),
-    modelResponseIdIdx: index('user_votes_model_response_id_idx').on(table.modelResponseId),
-    uniqueUserModelVote: unique('unique_user_model_vote').on(table.userId, table.modelResponseId),
-  }),
+  (table) => [
+    index('user_votes_user_id_idx').on(table.userId),
+    index('user_votes_message_id_idx').on(table.messageId),
+    index('user_votes_model_response_id_idx').on(table.modelResponseId),
+    unique('unique_user_model_vote').on(table.userId, table.modelResponseId),
+  ],
 );
 
 // Model rankings
@@ -165,15 +187,15 @@ export const modelRankings = pgTable(
     totalDislikes: integer('total_dislikes').default(0).notNull(),
     totalNeutral: integer('total_neutral').default(0).notNull(),
     rankingScore: real('ranking_score').default(0).notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    rankingScoreIdx: index('model_rankings_ranking_score_idx').on(table.rankingScore),
-    uniqueModelProvider: unique('model_rankings_model_provider_unique').on(
+  (table) => [
+    index('model_rankings_ranking_score_idx').on(table.rankingScore),
+    unique('model_rankings_model_provider_unique').on(
       table.modelName,
       table.providerName,
     ),
-  }),
+  ],
 );
 
 // Files (stored as bytea)
@@ -188,11 +210,11 @@ export const files = pgTable(
     mimeType: text('mime_type').notNull(),
     fileData: text('file_data').notNull(), // Base64 encoded for simplicity with Drizzle
     sizeBytes: integer('size_bytes').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('files_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('files_user_id_idx').on(table.userId),
+  ],
 );
 
 // Shared results
@@ -204,13 +226,78 @@ export const sharedResults = pgTable(
       .references(() => conversations.id, { onDelete: 'cascade' })
       .notNull(),
     shareToken: text('share_token').notNull().unique(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    expiresAt: timestamp('expires_at'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
   },
-  (table) => ({
-    shareTokenIdx: index('shared_results_share_token_idx').on(table.shareToken),
-    conversationIdIdx: index('shared_results_conversation_id_idx').on(table.conversationId),
-  }),
+  (table) => [
+    index('shared_results_share_token_idx').on(table.shareToken),
+    index('shared_results_conversation_id_idx').on(table.conversationId),
+  ],
+);
+
+// Better-Auth tables
+// Session table
+export const session = pgTable(
+  'session',
+  {
+    id: text('id').primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    token: text('token').notNull().unique(),
+    ipAddress: text('ip_address'),
+    userAgent: text('user_agent'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('session_user_id_idx').on(table.userId),
+    // Note: token has a UNIQUE constraint which creates an index automatically
+  ],
+);
+
+// Account table (OAuth)
+export const account = pgTable(
+  'account',
+  {
+    id: text('id').primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    accountId: text('account_id').notNull(),
+    providerId: text('provider_id').notNull(),
+    accessToken: text('access_token'),
+    refreshToken: text('refresh_token'),
+    idToken: text('id_token'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
+    password: text('password'), // For email/password
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('account_user_id_idx').on(table.userId),
+    unique('account_provider_account_unique').on(
+      table.providerId,
+      table.accountId,
+    ),
+  ],
+);
+
+// Verification table
+export const verification = pgTable(
+  'verification',
+  {
+    id: text('id').primaryKey(),
+    identifier: text('identifier').notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('verification_identifier_idx').on(table.identifier),
+  ],
 );
 
 // Relations
@@ -220,6 +307,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   conversations: many(conversations),
   votes: many(userVotes),
   files: many(files),
+  sessions: many(session),
+  accounts: many(account),
 }));
 
 export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
@@ -284,6 +373,20 @@ export const sharedResultsRelations = relations(sharedResults, ({ one }) => ({
   }),
 }));
 
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(users, {
+    fields: [session.userId],
+    references: [users.id],
+  }),
+}));
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(users, {
+    fields: [account.userId],
+    references: [users.id],
+  }),
+}));
+
 // Type exports for use in the application
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -305,4 +408,10 @@ export type File = typeof files.$inferSelect;
 export type NewFile = typeof files.$inferInsert;
 export type SharedResult = typeof sharedResults.$inferSelect;
 export type NewSharedResult = typeof sharedResults.$inferInsert;
+export type Session = typeof session.$inferSelect;
+export type NewSession = typeof session.$inferInsert;
+export type Account = typeof account.$inferSelect;
+export type NewAccount = typeof account.$inferInsert;
+export type Verification = typeof verification.$inferSelect;
+export type NewVerification = typeof verification.$inferInsert;
 

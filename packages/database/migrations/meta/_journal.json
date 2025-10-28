@@ -29,6 +29,20 @@
       "when": 1745520200000,
       "tag": "0003_add_shared_results_conversation_id_idx",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1761635000000,
+      "tag": "0004_add_better_auth_support",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1761650098478,
+      "tag": "0005_secret_human_robot",
+      "breakpoints": true
     }
   ]
 }

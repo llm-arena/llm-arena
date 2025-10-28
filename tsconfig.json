@@ -1,14 +1,10 @@
 {
   // ======================================================================
   // Monorepo Root TypeScript Configuration
-  // This is a project references configuration for the monorepo
+  // Configuration for root-level files like knip.config.ts
   // Individual apps/packages have their own specific configurations
   // ======================================================================
-  "files": [],
-  "references": [
-    { "path": "./apps/web" },
-    { "path": "./packages/auth" },
-    { "path": "./packages/database" },
-    { "path": "./packages/ui" }
-  ]
+  "extends": "./packages/config/typescript-config/base.json",
+  "include": ["*.ts", "*.js"],
+  "exclude": ["node_modules", "apps", "packages"]
 }
