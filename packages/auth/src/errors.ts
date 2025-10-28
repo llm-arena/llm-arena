@@ -36,8 +36,8 @@ export class AuthError extends Error {
     this.name = 'AuthError';
     
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AuthError);
+    if ('captureStackTrace' in Error) {
+      (Error as any).captureStackTrace(this, AuthError);
     }
   }
 }

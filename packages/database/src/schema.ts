@@ -48,12 +48,12 @@ export const users = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    emailIdx: index('users_email_idx').on(table.email),
+  (table) => [
+    index('users_email_idx').on(table.email),
     // Note: githubId, googleId, linuxdoId have UNIQUE constraints which create indexes automatically
-    inviterIdIdx: index('users_inviter_id_idx').on(table.inviterId),
-    deletedAtIdx: index('users_deleted_at_idx').on(table.deletedAt),
-  }),
+    index('users_inviter_id_idx').on(table.inviterId),
+    index('users_deleted_at_idx').on(table.deletedAt),
+  ],
 );
 
 // User preferences
@@ -72,9 +72,9 @@ export const userPreferences = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('user_preferences_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('user_preferences_user_id_idx').on(table.userId),
+  ],
 );
 
 // API Keys (encrypted)
@@ -91,9 +91,9 @@ export const apiKeys = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('api_keys_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('api_keys_user_id_idx').on(table.userId),
+  ],
 );
 
 // Conversations
@@ -108,9 +108,9 @@ export const conversations = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('conversations_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('conversations_user_id_idx').on(table.userId),
+  ],
 );
 
 // Messages
@@ -125,9 +125,9 @@ export const messages = pgTable(
     content: text('content').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    conversationIdIdx: index('messages_conversation_id_idx').on(table.conversationId),
-  }),
+  (table) => [
+    index('messages_conversation_id_idx').on(table.conversationId),
+  ],
 );
 
 // Model responses
@@ -145,9 +145,9 @@ export const modelResponses = pgTable(
     responseTimeMs: integer('response_time_ms'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    messageIdIdx: index('model_responses_message_id_idx').on(table.messageId),
-  }),
+  (table) => [
+    index('model_responses_message_id_idx').on(table.messageId),
+  ],
 );
 
 // User votes
@@ -168,12 +168,12 @@ export const userVotes = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('user_votes_user_id_idx').on(table.userId),
-    messageIdIdx: index('user_votes_message_id_idx').on(table.messageId),
-    modelResponseIdIdx: index('user_votes_model_response_id_idx').on(table.modelResponseId),
-    uniqueUserModelVote: unique('unique_user_model_vote').on(table.userId, table.modelResponseId),
-  }),
+  (table) => [
+    index('user_votes_user_id_idx').on(table.userId),
+    index('user_votes_message_id_idx').on(table.messageId),
+    index('user_votes_model_response_id_idx').on(table.modelResponseId),
+    unique('unique_user_model_vote').on(table.userId, table.modelResponseId),
+  ],
 );
 
 // Model rankings
@@ -189,13 +189,13 @@ export const modelRankings = pgTable(
     rankingScore: real('ranking_score').default(0).notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    rankingScoreIdx: index('model_rankings_ranking_score_idx').on(table.rankingScore),
-    uniqueModelProvider: unique('model_rankings_model_provider_unique').on(
+  (table) => [
+    index('model_rankings_ranking_score_idx').on(table.rankingScore),
+    unique('model_rankings_model_provider_unique').on(
       table.modelName,
       table.providerName,
     ),
-  }),
+  ],
 );
 
 // Files (stored as bytea)
@@ -212,9 +212,9 @@ export const files = pgTable(
     sizeBytes: integer('size_bytes').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('files_user_id_idx').on(table.userId),
-  }),
+  (table) => [
+    index('files_user_id_idx').on(table.userId),
+  ],
 );
 
 // Shared results
@@ -229,10 +229,10 @@ export const sharedResults = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }),
   },
-  (table) => ({
-    shareTokenIdx: index('shared_results_share_token_idx').on(table.shareToken),
-    conversationIdIdx: index('shared_results_conversation_id_idx').on(table.conversationId),
-  }),
+  (table) => [
+    index('shared_results_share_token_idx').on(table.shareToken),
+    index('shared_results_conversation_id_idx').on(table.conversationId),
+  ],
 );
 
 // Better-Auth tables
@@ -251,10 +251,10 @@ export const session = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('session_user_id_idx').on(table.userId),
+  (table) => [
+    index('session_user_id_idx').on(table.userId),
     // Note: token has a UNIQUE constraint which creates an index automatically
-  }),
+  ],
 );
 
 // Account table (OAuth)
@@ -275,13 +275,13 @@ export const account = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    userIdIdx: index('account_user_id_idx').on(table.userId),
-    providerAccountIdx: unique('account_provider_account_unique').on(
+  (table) => [
+    index('account_user_id_idx').on(table.userId),
+    unique('account_provider_account_unique').on(
       table.providerId,
       table.accountId,
     ),
-  }),
+  ],
 );
 
 // Verification table
@@ -295,9 +295,9 @@ export const verification = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => ({
-    identifierIdx: index('verification_identifier_idx').on(table.identifier),
-  }),
+  (table) => [
+    index('verification_identifier_idx').on(table.identifier),
+  ],
 );
 
 // Relations

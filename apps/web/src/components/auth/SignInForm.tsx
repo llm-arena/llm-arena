@@ -60,7 +60,6 @@ export function SignInForm({ callbackUrl = '/dashboard', showOAuth = false }: Si
         setLoading(false);
         return;
       }
-
     } catch (_err) {
       setError('An unexpected error occurred');
       setLoading(false);

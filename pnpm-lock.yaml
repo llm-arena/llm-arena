@@ -216,10 +216,10 @@ importers:
         specifier: ^0.13.8
         version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       drizzle-orm:
-        specifier: ^0.44.6
+        specifier: ^0.44.7
         version: 0.44.7(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.8)(pg@8.16.3)(postgres@3.4.7)
       postgres:
-        specifier: ^3.4.5
+        specifier: ^3.4.7
         version: 3.4.7
       zod:
         specifier: ^4.1.12

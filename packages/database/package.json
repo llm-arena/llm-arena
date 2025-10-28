@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.13.8",
-    "drizzle-orm": "^0.44.6",
-    "postgres": "^3.4.5",
+    "drizzle-orm": "^0.44.7",
+    "postgres": "^3.4.7",
     "zod": "^4.1.12"
   },
   "devDependencies": {
