@@ -1,11 +1,11 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { Env } from './env';
+import { env } from '@lmring/env';
 import * as schema from './schema';
 
 export const createDbConnection = () => {
   try {
-    const client = postgres(Env.DATABASE_URL, {
+    const client = postgres(env.DATABASE_URL, {
       prepare: false,
     });
 

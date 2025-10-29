@@ -6,14 +6,14 @@ import {
   getJsonLinesFormatter,
   getLogger,
 } from '@logtape/logtape';
-import { Env } from './Env';
+import { env } from '@lmring/env';
 
 const betterStackSink: AsyncSink = async (record) => {
-  await fetch(`https://${Env.NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST}`, {
+  await fetch(`https://${env.NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${Env.NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN}`,
+      Authorization: `Bearer ${env.NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN}`,
     },
     body: JSON.stringify(record),
   });
@@ -29,7 +29,7 @@ await configure({
     {
       category: ['app'],
       sinks:
-        Env.NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN && Env.NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST
+        env.NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN && env.NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST
           ? ['console', 'betterStack']
           : ['console'],
       lowestLevel: 'debug',

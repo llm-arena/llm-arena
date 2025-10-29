@@ -13,10 +13,9 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@t3-oss/env-nextjs": "^0.13.8",
+    "@lmring/env": "workspace:*",
     "drizzle-orm": "^0.44.7",
-    "postgres": "^3.4.7",
-    "zod": "^4.1.12"
+    "postgres": "^3.4.7"
   },
   "devDependencies": {
     "@lmring/typescript-config": "workspace:*",

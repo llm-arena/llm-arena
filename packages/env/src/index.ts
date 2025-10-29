@@ -1,7 +1,27 @@
 import { createEnv } from '@t3-oss/env-nextjs';
+import { config } from 'dotenv';
+import { findUpSync } from 'find-up-simple';
+import * as path from 'node:path';
 import * as z from 'zod';
 
-export const Env = createEnv({
+// Find project root by looking for pnpm-workspace.yaml
+const workspaceRoot = findUpSync('pnpm-workspace.yaml', {
+  cwd: process.cwd(),
+  type: 'file',
+});
+
+if (!workspaceRoot) {
+  throw new Error(
+    'Could not find pnpm-workspace.yaml. Are you in a pnpm workspace?',
+  );
+}
+
+const projectRoot = path.dirname(workspaceRoot);
+
+// Load .env file from project root
+config({ path: path.join(projectRoot, '.env') });
+
+export const env = createEnv({
   server: {
     ARCJET_KEY: z.string().startsWith('ajkey_').or(z.literal('')).optional(),
     DATABASE_URL: z.string().min(1),
@@ -80,3 +100,4 @@ export const Env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
   },
 });
+

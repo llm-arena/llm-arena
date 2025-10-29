@@ -1,4 +1,4 @@
-import { Env } from '@/libs/Env';
+import { env } from '@lmring/env';
 import { routing } from '@/libs/I18nRouting';
 
 /**
@@ -15,23 +15,23 @@ import { routing } from '@/libs/I18nRouting';
  */
 export const getBaseUrl = () => {
   // Server-side only: Check BETTER_AUTH_URL first
-  if (typeof window === 'undefined' && Env.BETTER_AUTH_URL) {
-    return Env.BETTER_AUTH_URL;
+  if (typeof window === 'undefined' && env.BETTER_AUTH_URL) {
+    return env.BETTER_AUTH_URL;
   }
 
   // Check explicit app URL (available on both client and server)
-  if (Env.NEXT_PUBLIC_APP_URL) {
-    return Env.NEXT_PUBLIC_APP_URL;
+  if (env.NEXT_PUBLIC_APP_URL) {
+    return env.NEXT_PUBLIC_APP_URL;
   }
 
   // Vercel-specific URLs (server-side only)
   if (typeof window === 'undefined') {
-    if (Env.VERCEL_ENV === 'production' && Env.VERCEL_PROJECT_PRODUCTION_URL) {
-      return `https://${Env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    if (env.VERCEL_ENV === 'production' && env.VERCEL_PROJECT_PRODUCTION_URL) {
+      return `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`;
     }
 
-    if (Env.VERCEL_URL) {
-      return `https://${Env.VERCEL_URL}`;
+    if (env.VERCEL_URL) {
+      return `https://${env.VERCEL_URL}`;
     }
   }
 
@@ -53,12 +53,12 @@ export const getAuthBaseUrl = () => {
   // Validate consistency between BETTER_AUTH_URL and NEXT_PUBLIC_APP_URL
   if (
     typeof window === 'undefined' &&
-    Env.BETTER_AUTH_URL &&
-    Env.NEXT_PUBLIC_APP_URL &&
-    Env.BETTER_AUTH_URL !== Env.NEXT_PUBLIC_APP_URL
+    env.BETTER_AUTH_URL &&
+    env.NEXT_PUBLIC_APP_URL &&
+    env.BETTER_AUTH_URL !== env.NEXT_PUBLIC_APP_URL
   ) {
     console.warn(
-      `[Auth Config Warning] BETTER_AUTH_URL (${Env.BETTER_AUTH_URL}) and NEXT_PUBLIC_APP_URL (${Env.NEXT_PUBLIC_APP_URL}) are different. ` +
+      `[Auth Config Warning] BETTER_AUTH_URL (${env.BETTER_AUTH_URL}) and NEXT_PUBLIC_APP_URL (${env.NEXT_PUBLIC_APP_URL}) are different. ` +
         'This may cause OAuth callback mismatches. ' +
         'Ensure both variables point to the same publicly accessible URL.',
     );

@@ -2,7 +2,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import { Env } from './src/libs/Env';
+import { env } from '@lmring/env';
 
 const baseConfig: NextConfig = {
   poweredByHeader: false,
@@ -15,17 +15,17 @@ const baseConfig: NextConfig = {
 
 let configWithPlugins = createNextIntlPlugin('./src/libs/I18n.ts')(baseConfig);
 
-if (Env.ANALYZE === 'true') {
+if (env.ANALYZE === 'true') {
   configWithPlugins = withBundleAnalyzer()(configWithPlugins);
 }
 
-const sentryDisabled = Env.NEXT_PUBLIC_SENTRY_DISABLED === 'true';
-const hasSentryConfig = !!Env.SENTRY_ORGANIZATION && !!Env.SENTRY_PROJECT;
+const sentryDisabled = env.NEXT_PUBLIC_SENTRY_DISABLED === 'true';
+const hasSentryConfig = !!env.SENTRY_ORGANIZATION && !!env.SENTRY_PROJECT;
 if (!sentryDisabled && hasSentryConfig) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
-    org: Env.SENTRY_ORGANIZATION as string,
-    project: Env.SENTRY_PROJECT as string,
-    silent: !Env.CI,
+    org: env.SENTRY_ORGANIZATION as string,
+    project: env.SENTRY_PROJECT as string,
+    silent: !env.CI,
 
     // For all available options, see:
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
