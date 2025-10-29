@@ -1,3 +1,4 @@
+import { env } from '@lmring/env';
 import type { AsyncSink } from '@logtape/logtape';
 import {
   configure,
@@ -6,7 +7,6 @@ import {
   getJsonLinesFormatter,
   getLogger,
 } from '@logtape/logtape';
-import { env } from '@lmring/env';
 
 const betterStackSink: AsyncSink = async (record) => {
   await fetch(`https://${env.NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST}`, {

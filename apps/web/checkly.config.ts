@@ -1,6 +1,6 @@
+import { env } from '@lmring/env';
 import { defineConfig } from 'checkly';
 import { EmailAlertChannel, Frequency } from 'checkly/constructs';
-import { env } from '@lmring/env';
 
 const sendDefaults = {
   sendFailure: true,

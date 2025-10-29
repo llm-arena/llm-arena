@@ -3,8 +3,8 @@
  */
 
 import { createAuth } from '@lmring/auth';
-import { getAuthBaseUrl } from '@/utils/Helpers';
 import { env } from '@lmring/env';
+import { getAuthBaseUrl } from '@/utils/Helpers';
 import { logger } from './Logger';
 
 export const auth = createAuth({

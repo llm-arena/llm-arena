@@ -1,6 +1,6 @@
+import { env } from '@lmring/env';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { env } from '@lmring/env';
 
 export async function createClient() {
   const cookieStore = await cookies();

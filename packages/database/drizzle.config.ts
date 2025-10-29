@@ -1,4 +1,5 @@
 import { defineConfig } from 'drizzle-kit';
+import '@lmring/env/config'; // Load environment variables first
 import { env } from '@lmring/env';
 
 export default defineConfig({

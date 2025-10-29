@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/nextjs';
 import { env } from '@lmring/env';
+import * as Sentry from '@sentry/nextjs';
 
 const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
   dsn: env.NEXT_PUBLIC_SENTRY_DSN,

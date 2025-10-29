@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/nextjs';
 import { env } from '@lmring/env';
+import * as Sentry from '@sentry/nextjs';
 
 const sentryDisabled = (env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
 if (!sentryDisabled) {
