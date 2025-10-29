@@ -3,18 +3,18 @@
  */
 
 import { createAuth } from '@lmring/auth';
+import { env } from '@lmring/env';
 import { getAuthBaseUrl } from '@/utils/Helpers';
-import { Env } from './Env';
 import { logger } from './Logger';
 
 export const auth = createAuth({
-  deploymentMode: Env.DEPLOYMENT_MODE,
+  deploymentMode: env.DEPLOYMENT_MODE,
   baseURL: getAuthBaseUrl(),
-  secret: Env.BETTER_AUTH_SECRET,
-  githubClientId: Env.GITHUB_CLIENT_ID,
-  githubClientSecret: Env.GITHUB_CLIENT_SECRET,
-  googleClientId: Env.GOOGLE_CLIENT_ID,
-  googleClientSecret: Env.GOOGLE_CLIENT_SECRET,
+  secret: env.BETTER_AUTH_SECRET,
+  githubClientId: env.GITHUB_CLIENT_ID,
+  githubClientSecret: env.GITHUB_CLIENT_SECRET,
+  googleClientId: env.GOOGLE_CLIENT_ID,
+  googleClientSecret: env.GOOGLE_CLIENT_SECRET,
   logger: {
     warn: (message: string, context?: Record<string, unknown>) => {
       logger.warn(message, context);

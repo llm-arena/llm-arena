@@ -1,13 +1,13 @@
 import { detectBot } from '@arcjet/next';
 import type { AuthUser } from '@lmring/auth';
 import { isDisabled, isPending, UserStatus } from '@lmring/auth';
+import { routing } from '@lmring/i18n';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import arcjet from '@/libs/Arcjet';
 import { auth } from '@/libs/Auth';
 import { logger } from '@/libs/Logger';
-import { routing } from './libs/I18nRouting';
 
 const handleI18nRouting = createMiddleware(routing);
 

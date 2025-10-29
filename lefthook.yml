@@ -9,7 +9,7 @@ pre-commit:
   commands:
     lint:
       glob: '*'
-      run: npx --no -- biome check --write --no-errors-on-unmatched
+      run: pnpm run lint:fix
       stage_fixed: true
       priority: 1
     check-types:

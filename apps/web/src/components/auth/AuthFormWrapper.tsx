@@ -5,7 +5,7 @@
 
 'use client';
 
-import { Env } from '@/libs/Env';
+import { env } from '@lmring/env';
 import { SignInForm } from './SignInForm';
 import { SignUpForm } from './SignUpForm';
 
@@ -16,7 +16,7 @@ interface AuthFormWrapperProps {
 
 export function AuthFormWrapper({ type, callbackUrl }: AuthFormWrapperProps) {
   // Check if we're in SaaS mode - OAuth is only available in SaaS mode
-  const showOAuth = Env.NEXT_PUBLIC_DEPLOYMENT_MODE === 'saas';
+  const showOAuth = env.NEXT_PUBLIC_DEPLOYMENT_MODE === 'saas';
 
   if (type === 'signin') {
     return <SignInForm callbackUrl={callbackUrl} showOAuth={showOAuth} />;

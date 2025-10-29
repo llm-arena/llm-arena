@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -10,9 +11,9 @@ export default async function DashboardLayout(props: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await props.params;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'DashboardLayout',
   });
 

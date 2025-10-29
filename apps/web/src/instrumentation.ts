@@ -1,9 +1,9 @@
+import { env } from '@lmring/env';
 import * as Sentry from '@sentry/nextjs';
-import { Env } from '@/libs/Env';
 
 const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
-  dsn: Env.NEXT_PUBLIC_SENTRY_DSN,
-  spotlight: Env.NODE_ENV === 'development',
+  dsn: env.NEXT_PUBLIC_SENTRY_DSN,
+  spotlight: env.NODE_ENV === 'development',
   integrations: [Sentry.consoleLoggingIntegration()],
   sendDefaultPii: true,
   tracesSampleRate: 1,
@@ -13,12 +13,12 @@ const sentryOptions: Sentry.NodeOptions | Sentry.EdgeOptions = {
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    if (Env.DATABASE_URL && Env.DATABASE_URL !== '') {
+    if (env.DATABASE_URL && env.DATABASE_URL !== '') {
       try {
         const { runMigrations } = await import('@lmring/database');
         await runMigrations();
       } catch (error) {
-        if (Env.NODE_ENV === 'production') {
+        if (env.NODE_ENV === 'production') {
           console.error('Migration failed in production, stopping application');
           throw error;
         }
@@ -30,7 +30,7 @@ export async function register() {
     }
   }
 
-  const sentryDisabled = (Env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
+  const sentryDisabled = (env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
   if (!sentryDisabled) {
     if (process.env.NEXT_RUNTIME === 'nodejs') {
       Sentry.init(sentryOptions);

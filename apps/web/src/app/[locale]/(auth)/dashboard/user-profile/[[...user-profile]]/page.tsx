@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/libs/Supabase.server';
@@ -9,7 +10,7 @@ type IUserProfilePageProps = {
 export async function generateMetadata(props: IUserProfilePageProps): Promise<Metadata> {
   const { locale } = await props.params;
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'UserProfile',
   });
 
@@ -20,9 +21,9 @@ export async function generateMetadata(props: IUserProfilePageProps): Promise<Me
 
 export default async function UserProfilePage(props: IUserProfilePageProps) {
   const { locale } = await props.params;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'UserProfile',
   });
 

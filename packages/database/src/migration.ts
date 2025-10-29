@@ -3,10 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
-import { Env } from './env';
+import { env } from '@lmring/env';
 
 export async function runMigrations() {
-  const client = postgres(Env.DATABASE_URL, {
+  const client = postgres(env.DATABASE_URL, {
     prepare: false, // Required for Supabase transaction pooling mode
   });
   const db = drizzle(client);

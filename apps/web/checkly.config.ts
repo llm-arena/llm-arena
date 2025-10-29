@@ -1,6 +1,6 @@
+import { env } from '@lmring/env';
 import { defineConfig } from 'checkly';
 import { EmailAlertChannel, Frequency } from 'checkly/constructs';
-import { Env } from './src/libs/Env';
 
 const sendDefaults = {
   sendFailure: true,
@@ -9,13 +9,13 @@ const sendDefaults = {
 };
 
 const emailChannel = new EmailAlertChannel('email-channel-1', {
-  address: Env.CHECKLY_EMAIL_ADDRESS ?? '',
+  address: env.CHECKLY_EMAIL_ADDRESS ?? '',
   ...sendDefaults,
 });
 
 export const config = defineConfig({
-  projectName: Env.CHECKLY_PROJECT_NAME ?? '',
-  logicalId: Env.CHECKLY_LOGICAL_ID ?? '',
+  projectName: env.CHECKLY_PROJECT_NAME ?? '',
+  logicalId: env.CHECKLY_LOGICAL_ID ?? '',
   repoUrl: 'https://github.com/lmring/lmring',
   checks: {
     locations: ['us-east-1', 'eu-west-1'],
@@ -28,9 +28,9 @@ export const config = defineConfig({
     },
     playwrightConfig: {
       use: {
-        baseURL: Env.ENVIRONMENT_URL || Env.NEXT_PUBLIC_APP_URL,
+        baseURL: env.ENVIRONMENT_URL || env.NEXT_PUBLIC_APP_URL,
         extraHTTPHeaders: {
-          'x-vercel-protection-bypass': Env.VERCEL_BYPASS_TOKEN,
+          'x-vercel-protection-bypass': env.VERCEL_BYPASS_TOKEN,
         },
       },
     },

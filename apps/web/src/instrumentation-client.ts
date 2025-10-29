@@ -1,15 +1,15 @@
+import { env } from '@lmring/env';
 import * as Sentry from '@sentry/nextjs';
-import { Env } from '@/libs/Env';
 
-const sentryDisabled = (Env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
+const sentryDisabled = (env.NEXT_PUBLIC_SENTRY_DISABLED ?? '').toLowerCase() === 'true';
 if (!sentryDisabled) {
   Sentry.init({
-    dsn: Env.NEXT_PUBLIC_SENTRY_DSN,
+    dsn: env.NEXT_PUBLIC_SENTRY_DSN,
     integrations: [
       Sentry.replayIntegration(),
       Sentry.consoleLoggingIntegration(),
       Sentry.browserTracingIntegration(),
-      ...(Env.NODE_ENV === 'development' ? [Sentry.spotlightBrowserIntegration()] : []),
+      ...(env.NODE_ENV === 'development' ? [Sentry.spotlightBrowserIntegration()] : []),
     ],
     sendDefaultPii: true,
     tracesSampleRate: 1,

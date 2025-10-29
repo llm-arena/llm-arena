@@ -1,11 +1,11 @@
 import crypto from 'node:crypto';
-import { Env } from './env';
+import { env } from '@lmring/env';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
 
 function getEncryptionKey(): Buffer {
-  return Buffer.from(Env.ENCRYPTION_KEY, 'hex');
+  return Buffer.from(env.ENCRYPTION_KEY, 'hex');
 }
 
 /**

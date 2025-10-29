@@ -1,7 +1,7 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import * as z from 'zod';
 
-export const Env = createEnv({
+export const env = createEnv({
   server: {
     ARCJET_KEY: z.string().startsWith('ajkey_').or(z.literal('')).optional(),
     DATABASE_URL: z.string().min(1),
@@ -80,3 +80,4 @@ export const Env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
   },
 });
+

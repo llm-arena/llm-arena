@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -9,7 +10,7 @@ type IIndexProps = {
 export async function generateMetadata(props: IIndexProps): Promise<Metadata> {
   const { locale } = await props.params;
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'Index',
   });
 
@@ -21,9 +22,9 @@ export async function generateMetadata(props: IIndexProps): Promise<Metadata> {
 
 export default async function Index(props: IIndexProps) {
   const { locale } = await props.params;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'Index',
   });
 

@@ -1,11 +1,13 @@
 import { defineConfig } from 'drizzle-kit';
+import '@lmring/env/config'; // Load environment variables first
+import { env } from '@lmring/env';
 
 export default defineConfig({
   out: './migrations',
   schema: './src/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!, // Don't switch to use Env value.
+    url: env.DATABASE_URL,
   },
   verbose: true,
   strict: true,
