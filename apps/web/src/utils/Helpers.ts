@@ -1,5 +1,5 @@
 import { env } from '@lmring/env';
-import { routing } from '@/libs/I18nRouting';
+import { routing } from '@lmring/i18n';
 
 /**
  * Get the base URL for the application

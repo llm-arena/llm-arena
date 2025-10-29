@@ -27,6 +27,7 @@
     "@lmring/auth": "workspace:*",
     "@lmring/database": "workspace:*",
     "@lmring/env": "workspace:*",
+    "@lmring/i18n": "workspace:*",
     "@lmring/ui": "workspace:*",
     "@sentry/nextjs": "^10.22.0",
     "@supabase/ssr": "^0.7.0",

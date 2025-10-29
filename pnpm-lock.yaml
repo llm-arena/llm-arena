@@ -44,6 +44,9 @@ importers:
       '@lmring/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@lmring/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@lmring/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -73,7 +76,7 @@ importers:
         version: 15.5.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       next-intl:
         specifier: ^4.3.12
-        version: 4.4.0(next@15.5.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+        version: 4.4.0(next@15.5.6(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       posthog-js:
         specifier: ^1.278.0
         version: 1.281.0
@@ -255,6 +258,22 @@ importers:
       zod:
         specifier: ^4.1.12
         version: 4.1.12
+    devDependencies:
+      '@lmring/typescript-config':
+        specifier: workspace:*
+        version: link:../config/typescript-config
+      '@types/node':
+        specifier: ^24.9.1
+        version: 24.9.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/i18n:
+    dependencies:
+      next-intl:
+        specifier: ^4.3.12
+        version: 4.4.0(next@15.5.6(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
     devDependencies:
       '@lmring/typescript-config':
         specifier: workspace:*
@@ -11531,7 +11550,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-intl@4.4.0(next@15.5.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
+  next-intl@4.4.0(next@15.5.6(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.5.10
       negotiator: 1.0.0

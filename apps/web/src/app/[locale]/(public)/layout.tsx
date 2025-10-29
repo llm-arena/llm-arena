@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
@@ -8,9 +9,9 @@ export default async function PublicLayout(props: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await props.params;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'PublicLayout',
   });
 

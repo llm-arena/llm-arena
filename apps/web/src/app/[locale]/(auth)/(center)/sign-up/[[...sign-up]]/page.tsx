@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -11,7 +12,7 @@ type ISignUpPageProps = {
 export async function generateMetadata(props: ISignUpPageProps): Promise<Metadata> {
   const { locale } = await props.params;
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'SignUp',
   });
 
@@ -24,9 +25,9 @@ export async function generateMetadata(props: ISignUpPageProps): Promise<Metadat
 export default async function SignUpPage(props: ISignUpPageProps) {
   const { locale } = await props.params;
   const { callbackUrl } = await props.searchParams;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'SignUp',
   });
 

@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { setRequestLocale } from 'next-intl/server';
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function AccountDisabledPage(props: IAccountDisabledPageProps) {
   const { locale } = await props.params;
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
 
   return (
     <div className="w-full max-w-md space-y-8">

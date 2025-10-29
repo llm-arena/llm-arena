@@ -2,6 +2,6 @@
 // This allows TypeScript to recognize CSS file imports
 
 declare module '*.css' {
-  const content: void;
+  const content: undefined;
   export default content;
 }

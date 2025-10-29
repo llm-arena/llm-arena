@@ -1,3 +1,4 @@
+import type { Locale } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Hello } from '@/components/Hello';
@@ -7,7 +8,7 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
   const { locale } = await props.params;
   const t = await getTranslations({
-    locale,
+    locale: locale as Locale,
     namespace: 'Dashboard',
   });
 

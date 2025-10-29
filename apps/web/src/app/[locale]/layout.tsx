@@ -1,9 +1,9 @@
+import { type Locale, routing } from '@lmring/i18n';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
-import { routing } from '@/libs/I18nRouting';
 import '@/styles/global.css';
 
 export const metadata: Metadata = {
@@ -45,7 +45,7 @@ export default async function RootLayout(props: {
     notFound();
   }
 
-  setRequestLocale(locale);
+  setRequestLocale(locale as Locale);
 
   return (
     <html lang={locale}>
